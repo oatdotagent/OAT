@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+  <defs>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="90"/></filter>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0" stop-color="#28251F" stop-opacity="0"/>
+      <stop offset="1" stop-color="#1c1a16" stop-opacity="0.85"/>
+    </radialGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="#28251F"/>
+  <!-- Aurora glow -->
+  <g filter="url(#blur)" opacity="0.9">
+    <ellipse cx="300" cy="330" rx="300" ry="220" fill="rgb(40,150,140)" opacity="0.55"/>
+    <ellipse cx="730" cy="300" rx="260" ry="200" fill="rgb(60,115,190)" opacity="0.45"/>
+    <ellipse cx="560" cy="720" rx="330" ry="210" fill="rgb(30,130,95)" opacity="0.5"/>
+  </g>
+  <rect width="1000" height="1000" fill="url(#vignette)"/>
+  <!-- OAT mark (same geometry as favicon, scaled around the centre) -->
+  <g transform="translate(500 500) scale(17) translate(-16 -16)" fill="none" stroke="#F5F0E6" stroke-width="2" stroke-linecap="round">
+    <circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/>
+    <path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/>
+  </g>
+</svg>

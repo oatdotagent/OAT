@@ -1,0 +1,93 @@
+/* Design tokens — single source of truth for colour, type, spacing, radius and elevation. */
+:root {
+  /* Surfaces */
+  --bg: #f5f0e6;
+  --surface: #fffcf6;
+  --surface-2: #faf6ee;
+  --sunken: #efe8da;
+
+  /* Ink */
+  --ink: #28251f;
+  --ink-2: #4f4a42;
+  --ink-3: #6b6458; /* ≥ 4.5:1 on --bg and --surface */
+
+  /* Lines */
+  --line: #e4dccc;
+  --line-strong: #d2c7b2;
+
+  /* Restrained accent: deep green */
+  --accent: #2f5d50;
+  --accent-hover: #264d42;
+  --accent-ink: #fffcf6;
+  --accent-soft: #e4ece5;
+
+  /* Status (muted, AA on their soft backgrounds) */
+  --ok: #2e6640;
+  --ok-soft: #e3eedf;
+  --warn: #835509;
+  --warn-soft: #f6e9cd;
+  --err: #9e3428;
+  --err-soft: #f7e1db;
+  --info: #3b5677;
+  --info-soft: #e3e9f0;
+  --neutral-soft: #ece6da;
+
+  /* Aurora (landing hero background) */
+  --aurora-teal: 40 150 140;
+  --aurora-emerald: 30 130 95;
+  --aurora-blue: 60 115 190;
+
+  /* Code */
+  --code-bg: #2b2823;
+  --code-ink: #efe8da;
+  --code-muted: #a79f90;
+  --code-accent: #b9d3c2;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+
+  --step--2: clamp(0.75rem, 0.73rem + 0.08vw, 0.8125rem);
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-0: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+  --step-1: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  --step-2: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --step-3: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  --step-4: clamp(2rem, 1.45rem + 2.6vw, 3.5rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+  --maxw: 1160px;
+
+  /* Shape & elevation */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgb(40 37 31 / 0.05);
+  --shadow: 0 1px 2px rgb(40 37 31 / 0.04), 0 10px 28px -16px rgb(40 37 31 / 0.18);
+  --shadow-lg: 0 2px 4px rgb(40 37 31 / 0.04), 0 24px 48px -24px rgb(40 37 31 / 0.25);
+
+  /* Interaction */
+  --tap: 44px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 160ms;
+  --focus: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent);
+
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 0ms;
+  }
+}

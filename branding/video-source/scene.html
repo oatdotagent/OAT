@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #1d1b17; }
+  /* Soft falloff baked into the gradients (no filter: blur, which is very slow to rasterize headless). */
+  .aurora { position: absolute; will-change: transform, opacity; }
+  #a1 { width: 1400px; height: 950px; left: 10px; top: -5px; background: radial-gradient(closest-side, rgb(40 150 140 / .78), rgb(40 150 140 / .5) 30%, rgb(40 150 140 / .2) 60%, rgb(40 150 140 / .05) 82%, transparent); }
+  #a2 { width: 1250px; height: 870px; left: 830px; top: -85px; background: radial-gradient(closest-side, rgb(60 115 190 / .7), rgb(60 115 190 / .45) 30%, rgb(60 115 190 / .18) 60%, rgb(60 115 190 / .04) 82%, transparent); }
+  #a3 { width: 1550px; height: 900px; left: 410px; top: 350px; background: radial-gradient(closest-side, rgb(30 130 95 / .74), rgb(30 130 95 / .48) 30%, rgb(30 130 95 / .19) 60%, rgb(30 130 95 / .05) 82%, transparent); }
+  #ribbon { position: absolute; left: -200px; top: 260px; width: 2400px; height: 500px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%, #000 60%, transparent);
+    background: linear-gradient(100deg, transparent 15%, rgb(30 130 95 / .3) 36%, rgb(40 150 140 / .4) 50%, rgb(60 115 190 / .3) 64%, transparent 85%); }
+  #vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 40%, rgb(12 11 9 / .85) 100%); }
+  #grain { position: absolute; inset: -60px; opacity: .06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  #black { position: absolute; inset: 0; background: #000; }
+  #content { position: absolute; inset: 0; display: grid; place-items: center; }
+  #mark { position: absolute; left: 50%; top: 50%; width: 240px; height: 240px; margin: -120px 0 0 -120px; overflow: visible; }
+  #mark circle, #mark path { fill: none; stroke: #F5F0E6; stroke-width: 2; stroke-linecap: round; }
+  .glow { filter: drop-shadow(0 0 18px rgb(120 210 190 / .55)); }
+  .text { position: absolute; left: 0; right: 0; text-align: center; color: #F5F0E6; }
+  #wordmark { top: 548px; font: 700 150px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  #tag1, #tag2 { font: 400 44px/1.2 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  #tag1 { top: 742px; }
+  #tag2 { top: 800px; font-style: italic; color: #a9dccd; }
+  #soon { top: 772px; font: 600 30px/1 'Segoe UI', system-ui, Arial, sans-serif; letter-spacing: .62em; text-indent: .62em; color: #F5F0E6; }
+  #soon .rule { display: inline-block; vertical-align: middle; width: 90px; height: 1px; background: rgb(245 240 230 / .55); margin: 0 34px; transform-origin: center; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="aurora" id="a1"></div>
+  <div class="aurora" id="a2"></div>
+  <div class="aurora" id="a3"></div>
+  <div id="ribbon"></div>
+  <div id="vignette"></div>
+  <svg id="mark" viewBox="0 0 32 32">
+    <g id="markGroup">
+      <path id="l1" pathLength="1" d="M12.6 10h6.8"/>
+      <path id="l2" pathLength="1" d="M11.3 12.3l3.4 7.2"/>
+      <path id="l3" pathLength="1" d="M20.7 12.3l-3.4 7.2"/>
+      <circle id="d1" cx="10" cy="10" r="2.6"/>
+      <circle id="d2" cx="22" cy="10" r="2.6"/>
+      <circle id="d3" cx="16" cy="22" r="2.6"/>
+    </g>
+  </svg>
+  <div class="text" id="wordmark">OAT</div>
+  <div class="text" id="tag1">Coordinate AI providers.</div>
+  <div class="text" id="tag2">Verify what comes back.</div>
+  <div class="text" id="soon"><span class="rule" id="r1"></span>COMING SOON<span class="rule" id="r2"></span></div>
+  <div id="grain"></div>
+  <div id="black"></div>
+</div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeInOut = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const easeBack = (x) => { const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const $ = (id) => document.getElementById(id);
+
+window.render = (t, T) => {
+  // Aurora: slow drift, plus brightness pulses on the two impacts.
+  const pulse = (at, k) => Math.exp(-Math.max(0, t - at) * k) * (t >= at ? 1 : 0);
+  const glow = 1 + .25 * pulse(T.wordmark, 1.6) + .45 * pulse(T.comingSoon, 1.1);
+  const s = (p, a) => Math.sin(t * p + a);
+  $('a1').style.transform = `translate(${90 * s(.31, 0)}px, ${50 * s(.23, 1)}px) scale(${1 + .08 * s(.27, 2)})`;
+  $('a2').style.transform = `translate(${-110 * s(.26, 1.5)}px, ${60 * s(.21, .3)}px) scale(${1 + .1 * s(.19, .7)})`;
+  $('a3').style.transform = `translate(${80 * s(.22, 2.2)}px, ${-50 * s(.29, 1.1)}px) scale(${1 + .07 * s(.24, 1.9)})`;
+  $('ribbon').style.transform = `translateX(${160 * s(.2, .4)}px) skewY(${-4 + 3 * s(.17, 1)}deg)`;
+  for (const id of ['a1', 'a2', 'a3', 'ribbon']) $(id).style.opacity = clamp(.85 * glow, 0, 1);
+  $('stage').style.filter = `brightness(${.9 + .12 * (glow - 1)})`;
+  $('grain').style.transform = `translate(${(Math.floor(t * 30) * 37) % 60 - 30}px, ${(Math.floor(t * 30) * 53) % 60 - 30}px)`;
+
+  // From black, and back to black at the end.
+  const fadeIn = easeInOut(prog(t, ...T.auroraIn));
+  const fadeOut = easeInOut(prog(t, ...T.fadeOut));
+  $('black').style.opacity = Math.max(1 - fadeIn, fadeOut);
+
+  // Nodes pop in, then the connections draw.
+  T.dots.forEach((at, i) => {
+    const p = prog(t, at, at + .55);
+    const el = $('d' + (i + 1));
+    el.style.opacity = clamp(p * 3);
+    el.style.transformOrigin = `${el.getAttribute('cx')}px ${el.getAttribute('cy')}px`;
+    el.style.transform = `scale(${p === 0 ? 0 : easeBack(p)})`;
+  });
+  ['l1', 'l2', 'l3'].forEach((id, i) => {
+    const p = easeInOut(prog(t, T.lines[0] + i * .12, T.lines[1] + i * .12));
+    $(id).style.strokeDasharray = '1 1';
+    $(id).style.strokeDashoffset = 1 - p;
+    $(id).style.opacity = p > 0 ? 1 : 0;
+  });
+  const markGlow = pulse(T.lines[1], 1.2) * (t >= T.lines[1] ? 1 : 0);
+  $('mark').style.filter = `drop-shadow(0 0 ${8 + 26 * markGlow}px rgb(120 210 190 / ${.25 + .45 * markGlow}))`;
+
+  // Mark rises and shrinks as the wordmark lands.
+  const up = easeInOut(prog(t, T.wordmark - .35, T.wordmark + .45));
+  $('mark').style.transform = `translateY(${-150 * up}px) scale(${1 - .3 * up})`;
+
+  const w = easeOut(prog(t, T.wordmark, T.wordmark + .9));
+  $('wordmark').style.opacity = w;
+  $('wordmark').style.filter = `blur(${(1 - w) * 14}px)`;
+  $('wordmark').style.letterSpacing = `${.04 + (1 - w) * .18}em`;
+
+  const out = easeInOut(prog(t, T.taglineOut, T.taglineOut + .7));
+  for (const [id, at] of [['tag1', T.tagline1], ['tag2', T.tagline2]]) {
+    const p = easeOut(prog(t, at, at + .9));
+    $(id).style.opacity = p * (1 - out);
+    $(id).style.transform = `translateY(${(1 - p) * 18 - out * 10}px)`;
+    $(id).style.filter = `blur(${(1 - p) * 6 + out * 6}px)`;
+  }
+
+  const c = easeOut(prog(t, T.comingSoon, T.comingSoon + 1.1));
+  $('soon').style.opacity = c;
+  $('soon').style.filter = `blur(${(1 - c) * 10}px)`;
+  $('soon').style.letterSpacing = `${.62 + (1 - c) * .25}em`;
+  const r = easeInOut(prog(t, T.comingSoon + .25, T.comingSoon + 1.4));
+  $('r1').style.transform = $('r2').style.transform = `scaleX(${r})`;
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>OAT — Agent Infrastructure</title>
+    <meta
+      name="description"
+      content="OAT coordinates AI and data providers through declarative workflows, verifies outputs against explicit criteria, and records every call for audit."
+    />
+    <meta name="theme-color" content="#F5F0E6" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/styles/landing-entry.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <nav class="container site-header__inner" aria-label="Primary">
+        <a class="brand" href="/" aria-label="OAT home">
+          <span class="brand__mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#logo" /></svg></span>
+          <span class="brand__name">OAT</span>
+          <span class="brand__tag">Agent Infrastructure</span>
+        </a>
+        <ul class="nav__links">
+          <li><a class="nav__link" href="#product">Product</a></li>
+          <li><a class="nav__link" href="#features">Features</a></li>
+          <li><a class="nav__link" href="#preview">Dashboard</a></li>
+          <li><a class="nav__link" href="#developers">Developers</a></li>
+          <li><a class="nav__link" href="#docs">Docs</a></li>
+        </ul>
+        <div class="nav__actions">
+          <a class="btn btn--primary btn--sm nav__cta" href="/console/">Open console</a>
+          <button class="icon-btn nav__toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-nav-toggle>
+            <svg class="icon icon-open" aria-hidden="true"><use href="/icons.svg#menu" /></svg>
+            <svg class="icon icon-close" aria-hidden="true"><use href="/icons.svg#x" /></svg>
+          </button>
+        </div>
+      </nav>
+      <div class="mobile-menu" id="mobile-menu" data-nav-menu hidden>
+        <ul>
+          <li><a href="#product">Product</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#preview">Dashboard</a></li>
+          <li><a href="#developers">Developers</a></li>
+          <li><a href="#docs">Docs</a></li>
+        </ul>
+        <a class="btn btn--primary" href="/console/">Open console</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Hero -->
+      <!-- Full-bleed wrapper that only paints the decorative aurora behind the hero (see landing.css). -->
+      <div class="hero-aurora">
+      <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero__copy">
+          <p class="eyebrow">Agent infrastructure, without the agent runtime</p>
+          <h1 id="hero-title">Coordinate AI providers. Verify what comes back.</h1>
+          <p class="lede">
+            OAT runs declarative workflows across model, search, retrieval and developer APIs — with retries, fallbacks and
+            timeouts handled — then checks every output against criteria you define and records the evidence.
+          </p>
+          <div class="btn-row hero__ctas">
+            <a class="btn btn--primary" href="/console/">
+              Open the console
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right" /></svg>
+            </a>
+            <a class="btn btn--secondary" href="#developers">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#terminal" /></svg>
+              View the API
+            </a>
+          </div>
+        </div>
+
+        <aside class="hero__status card card--raised" aria-labelledby="status-title" data-api-status>
+          <div class="status-head">
+            <h2 id="status-title" class="status-title">This server</h2>
+            <span class="badge" data-status-badge><span class="spinner spinner--xs" aria-hidden="true"></span>Checking…</span>
+          </div>
+          <dl class="kv">
+            <dt>Endpoint</dt>
+            <dd><code>/api/v1/health</code></dd>
+            <dt>Status</dt>
+            <dd data-status-text>Contacting the API…</dd>
+            <dt>Uptime</dt>
+            <dd data-status-uptime>—</dd>
+            <dt>Readiness</dt>
+            <dd data-status-ready>—</dd>
+          </dl>
+          <p class="status-note muted">Live from the backend serving this page. Provider status and metrics are available in the console after signing in.</p>
+          <button class="btn btn--ghost btn--sm" type="button" data-status-refresh>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#refresh" /></svg>
+            Check again
+          </button>
+        </aside>
+      </section>
+      </div>
+
+      <!-- Product overview -->
+      <section id="product" class="section container" aria-labelledby="product-title">
+        <div class="section__head">
+          <p class="eyebrow">Product</p>
+          <h2 id="product-title">Three steps, every run recorded</h2>
+          <p class="lede">
+            Workflows are data, not code. Each step calls one provider capability; dependencies decide what runs in parallel. No model
+            decides control flow.
+          </p>
+        </div>
+        <ol class="steps">
+          <li class="card steps__item">
+            <span class="steps__num" aria-hidden="true">1</span>
+            <h3>Define</h3>
+            <p>Describe steps, inputs and dependencies as JSON. Validation catches cycles, missing references and unsafe schemas before anything runs.</p>
+          </li>
+          <li class="card steps__item">
+            <span class="steps__num" aria-hidden="true">2</span>
+            <h3>Run</h3>
+            <p>The coordinator executes the DAG with bounded parallelism, per-attempt timeouts, retries with backoff and fallback between compatible providers.</p>
+          </li>
+          <li class="card steps__item">
+            <span class="steps__num" aria-hidden="true">3</span>
+            <h3>Verify</h3>
+            <p>Outputs are checked against JSON Schema and explicit criteria, with evidence stored per check — and an honest note on what was not verified.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Features -->
+      <section id="features" class="section container" aria-labelledby="features-title">
+        <div class="section__head">
+          <p class="eyebrow">Capabilities</p>
+          <h2 id="features-title">Built for work you need to trust</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="card feature">
+            <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#layers" /></svg></span>
+            <h3>Orchestration</h3>
+            <p>Dependency-ordered steps, parallel stages, templated inputs between steps, cancellation and execution timeouts — with per-step status, attempts and duration persisted.</p>
+            <ul class="feature__list">
+              <li>Up to 50 steps per workflow</li>
+              <li><code>continueOnError</code> and dependency skipping</li>
+              <li>Interrupted runs flagged on restart</li>
+            </ul>
+          </article>
+          <article class="card feature">
+            <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#shield-check" /></svg></span>
+            <h3>Verification</h3>
+            <p>JSON Schema plus criteria such as <code>min_items</code>, <code>contains</code> and <code>urls_in_step</code>, which traces cited URLs back to the search results they came from.</p>
+            <ul class="feature__list">
+              <li>Evidence recorded for every check</li>
+              <li>Structure and citations — never “facts verified”</li>
+              <li>Optional: fail the step on failure</li>
+            </ul>
+          </article>
+          <article class="card feature">
+            <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#activity" /></svg></span>
+            <h3>Observability</h3>
+            <p>Structured, redacted logs with request IDs; provider latency, errors, tokens and estimated cost where reported; execution history and an audit trail.</p>
+            <ul class="feature__list">
+              <li>Liveness and readiness checks</li>
+              <li>Secrets scrubbed before logging</li>
+              <li>Per-provider error breakdown</li>
+            </ul>
+          </article>
+          <article class="card feature">
+            <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plug" /></svg></span>
+            <h3>Provider integrations</h3>
+            <p>Adapters for Anthropic Claude, Google Gemini, Jina AI, Tavily, Exa and GitHub, behind one contract per capability. Each stays disabled until its key is configured on the server.</p>
+            <ul class="feature__list">
+              <li>Keys never leave the server</li>
+              <li>Fallback only between compatible providers</li>
+              <li>SSRF guard on URL inputs</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Dashboard preview -->
+      <section id="preview" class="section container" aria-labelledby="preview-title">
+        <div class="section__head">
+          <p class="eyebrow">Console</p>
+          <h2 id="preview-title">One place to see every run</h2>
+          <p class="lede">The console shows providers, workflows, executions, verification evidence and metrics — read straight from your server.</p>
+        </div>
+
+        <figure class="preview card card--raised" aria-labelledby="preview-caption">
+          <div class="preview__bar">
+            <span class="preview__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="badge badge--outline">Illustrative example · sample data, not live</span>
+          </div>
+          <div class="preview__body">
+            <div class="preview__main">
+              <div class="preview__title-row">
+                <div>
+                  <p class="preview__kicker">Execution · Research brief</p>
+                  <p class="preview__title">ex_8c41f2a0</p>
+                </div>
+                <span class="badge badge--ok"><span class="dot"></span>Succeeded</span>
+              </div>
+              <ol class="timeline">
+                <li class="timeline__item">
+                  <span class="timeline__dot timeline__dot--ok" aria-hidden="true"></span>
+                  <div class="timeline__content">
+                    <div class="timeline__row"><strong>search</strong><span class="badge">web.search</span></div>
+                    <p class="muted">tavily → exa (fallback) · 2 attempts · 1.4 s</p>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <span class="timeline__dot timeline__dot--ok" aria-hidden="true"></span>
+                  <div class="timeline__content">
+                    <div class="timeline__row"><strong>repo</strong><span class="badge">github.repo</span></div>
+                    <p class="muted">github · 1 attempt · 0.3 s · ran in parallel with search</p>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <span class="timeline__dot timeline__dot--ok" aria-hidden="true"></span>
+                  <div class="timeline__content">
+                    <div class="timeline__row"><strong>summary</strong><span class="badge">llm.generate</span></div>
+                    <p class="muted">anthropic · 1 attempt · 6.2 s</p>
+                    <p class="preview__verify"><svg class="icon" aria-hidden="true"><use href="/icons.svg#shield-check" /></svg>Verification passed · 4/4 cited URLs traced to search results · facts not independently verified</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <div class="preview__side">
+              <p class="preview__kicker">Providers</p>
+              <ul class="preview__providers">
+                <li><span>Anthropic</span><span class="badge badge--ok">Healthy</span></li>
+                <li><span>Tavily</span><span class="badge badge--warn">Degraded</span></li>
+                <li><span>Exa</span><span class="badge badge--ok">Healthy</span></li>
+                <li><span>Jina AI</span><span class="badge">Disabled</span></li>
+              </ul>
+              <p class="preview__kicker">p95 latency by route</p>
+              <div class="bars" role="img" aria-label="Sample bar chart of p95 latency per route">
+                <div class="bars__row"><span>web.search</span><span class="bars__track"><span class="bars__fill bars__fill--38"></span></span></div>
+                <div class="bars__row"><span>github.repo</span><span class="bars__track"><span class="bars__fill bars__fill--12"></span></span></div>
+                <div class="bars__row"><span>llm.generate</span><span class="bars__track"><span class="bars__fill bars__fill--86"></span></span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption id="preview-caption" class="preview__caption">
+            <span>Sample values for illustration only. The console reads real data from your server — nothing there is simulated.</span>
+            <a class="btn btn--secondary btn--sm" href="/console/">See your live data <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right" /></svg></a>
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- Developers -->
+      <section id="developers" class="section container" aria-labelledby="dev-title">
+        <div class="dev-grid">
+          <div class="section__head section__head--tight">
+            <p class="eyebrow">Developers</p>
+            <h2 id="dev-title">A small, predictable API</h2>
+            <p class="lede">Versioned under <code>/api/v1</code>, bearer-token auth, one response envelope, request IDs on every response.</p>
+            <ul class="checklist">
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#check" /></svg>Success: <code>{ data, meta: { requestId } }</code></li>
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#check" /></svg>Errors: <code>{ error: { code, message, details } }</code></li>
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#check" /></svg>Executions start with <code>202</code>; poll until finished</li>
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#check" /></svg>Records are scoped to their owner</li>
+            </ul>
+          </div>
+
+          <div class="dev-code">
+            <div class="tabs__list" role="tablist" aria-label="Code examples">
+              <button class="tabs__tab" role="tab" id="tab-curl" aria-controls="panel-curl" aria-selected="true" type="button">cURL</button>
+              <button class="tabs__tab" role="tab" id="tab-ts" aria-controls="panel-ts" aria-selected="false" type="button">TypeScript</button>
+              <button class="tabs__tab" role="tab" id="tab-json" aria-controls="panel-json" aria-selected="false" type="button">Workflow JSON</button>
+            </div>
+
+            <div class="tabs__panel code" role="tabpanel" id="panel-curl" aria-labelledby="tab-curl" tabindex="0">
+              <div class="code__bar">
+                <span>Create a workflow, then run it</span>
+                <button class="copy-btn" type="button" data-copy-target="#code-curl"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button>
+              </div>
+<pre><code id="code-curl">export OAT=http://localhost:3000/api/v1
+export TOKEN=oat_your_token_here
+
+# 1. Create the workflow (see "Workflow JSON")
+curl -s "$OAT/workflows" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d @workflow.json
+
+# 2. Start an execution (returns 202 with an id)
+curl -s "$OAT/workflows/wf_.../executions" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"input":{"topic":"vector databases"}}'
+
+# 3. Poll the execution until it finishes
+curl -s "$OAT/executions/ex_..." \
+  -H "Authorization: Bearer $TOKEN"</code></pre>
+            </div>
+
+            <div class="tabs__panel code" role="tabpanel" id="panel-ts" aria-labelledby="tab-ts" tabindex="0" hidden>
+              <div class="code__bar">
+                <span>Run and wait (Node 18+ or browser)</span>
+                <button class="copy-btn" type="button" data-copy-target="#code-ts"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button>
+              </div>
+<pre><code id="code-ts">const BASE = 'http://localhost:3000/api/v1';
+const headers = {
+  Authorization: `Bearer ${process.env.OAT_TOKEN}`,
+  'Content-Type': 'application/json',
+};
+
+async function call(path, init = {}) {
+  const res = await fetch(BASE + path, { headers, ...init });
+  const body = await res.json();
+  if (!res.ok) throw new Error(`${body.error.code}: ${body.error.message}`);
+  return body.data;
+}
+
+const run = await call('/workflows/wf_.../executions', {
+  method: 'POST',
+  body: JSON.stringify({ input: { topic: 'vector databases' } }),
+});
+
+let execution = await call(`/executions/${run.id}`);
+while (['queued', 'running'].includes(execution.status)) {
+  await new Promise((r) =&gt; setTimeout(r, 1500));
+  execution = await call(`/executions/${run.id}`);
+}
+console.log(execution.status, execution.steps);</code></pre>
+            </div>
+
+            <div class="tabs__panel code" role="tabpanel" id="panel-json" aria-labelledby="tab-json" tabindex="0" hidden>
+              <div class="code__bar">
+                <span>workflow.json</span>
+                <button class="copy-btn" type="button" data-copy-target="#code-json"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button>
+              </div>
+<pre><code id="code-json">{
+  "name": "Research brief",
+  "inputSchema": {
+    "type": "object",
+    "required": ["topic"],
+    "properties": { "topic": { "type": "string" } }
+  },
+  "steps": [
+    {
+      "id": "search",
+      "capability": "web.search",
+      "input": { "query": "{{input.topic}}", "count": 5 }
+    },
+    {
+      "id": "summary",
+      "capability": "llm.generate",
+      "dependsOn": ["search"],
+      "input": {
+        "prompt": "Summarize {{input.topic}} and cite URLs: {{steps.search.output.results}}"
+      },
+      "verification": {
+        "criteria": [
+          { "type": "urls_in_step", "path": "text", "sourceStep": "search" }
+        ]
+      }
+    }
+  ]
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docs & getting started -->
+      <section id="docs" class="section container" aria-labelledby="docs-title">
+        <div class="section__head">
+          <p class="eyebrow">Documentation</p>
+          <h2 id="docs-title">Get started in four steps</h2>
+          <p class="lede">Everything runs locally with Node 22.13 or newer. Provider keys are optional — each integration stays off until configured.</p>
+        </div>
+
+        <ol class="start-grid">
+          <li class="card start">
+            <h3><span class="start__num">1</span>Install</h3>
+            <div class="code code--compact">
+              <div class="code__bar"><span>shell</span><button class="copy-btn" type="button" data-copy-target="#start-1"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button></div>
+              <pre><code id="start-1">npm install
+cp .env.example .env</code></pre>
+            </div>
+          </li>
+          <li class="card start">
+            <h3><span class="start__num">2</span>Create a token</h3>
+            <div class="code code--compact">
+              <div class="code__bar"><span>shell</span><button class="copy-btn" type="button" data-copy-target="#start-2"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button></div>
+              <pre><code id="start-2">npm run token:create -- alice admin</code></pre>
+            </div>
+            <p class="muted">Add the printed <code>alice:admin:&lt;hash&gt;</code> entry to <code>AUTH_TOKENS</code>. Only the hash is stored.</p>
+          </li>
+          <li class="card start">
+            <h3><span class="start__num">3</span>Configure providers</h3>
+            <p class="muted">Set any of <code>ANTHROPIC_API_KEY</code>, <code>JINA_API_KEY</code>, <code>TAVILY_API_KEY</code>, <code>EXA_API_KEY</code>, <code>GITHUB_TOKEN</code>. For a dry run, set <code>ENABLE_MOCK_PROVIDERS=true</code> — output is clearly labelled <code>[MOCK]</code>.</p>
+          </li>
+          <li class="card start">
+            <h3><span class="start__num">4</span>Build and run</h3>
+            <div class="code code--compact">
+              <div class="code__bar"><span>shell</span><button class="copy-btn" type="button" data-copy-target="#start-4"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button></div>
+              <pre><code id="start-4">npm run build
+npm start</code></pre>
+            </div>
+            <p class="muted">Then open <a href="/console/">the console</a> and paste your token.</p>
+          </li>
+        </ol>
+
+        <div class="card reference" id="reference">
+          <div class="card__header">
+            <h3 class="card__title"><svg class="icon" aria-hidden="true"><use href="/icons.svg#book" /></svg>API reference</h3>
+            <span class="badge badge--accent">/api/v1</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table table--stack">
+              <thead>
+                <tr><th scope="col">Route</th><th scope="col">Access</th><th scope="col">Purpose</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Route"><code>GET /health</code>, <code>/health/ready</code></td><td data-label="Access">Public</td><td data-label="Purpose">Liveness and database/migration readiness</td></tr>
+                <tr><td data-label="Route"><code>GET /me</code></td><td data-label="Access">Any token</td><td data-label="Purpose">Your user id, role and permissions</td></tr>
+                <tr><td data-label="Route"><code>GET /providers</code>, <code>/providers/health</code></td><td data-label="Access">User</td><td data-label="Purpose">Providers, capabilities with JSON Schemas, passive health</td></tr>
+                <tr><td data-label="Route"><code>POST /providers/health/probe</code></td><td data-label="Access">Admin</td><td data-label="Purpose">Active probes where they cost no paid quota</td></tr>
+                <tr><td data-label="Route"><code>POST /workflows/validate</code></td><td data-label="Access">User</td><td data-label="Purpose">Validate a draft: errors, parallel stages, readiness</td></tr>
+                <tr><td data-label="Route"><code>POST /workflows</code>, <code>GET /workflows[/:id]</code></td><td data-label="Access">Owner</td><td data-label="Purpose">Create, list and read workflows</td></tr>
+                <tr><td data-label="Route"><code>POST /workflows/:id/executions</code></td><td data-label="Access">Owner</td><td data-label="Purpose">Start a run (202); input checked against <code>inputSchema</code></td></tr>
+                <tr><td data-label="Route"><code>GET /executions[/:id]</code>, <code>POST …/cancel</code></td><td data-label="Access">Owner</td><td data-label="Purpose">History, per-step detail, cancellation</td></tr>
+                <tr><td data-label="Route"><code>GET /verifications/:id</code></td><td data-label="Access">Owner</td><td data-label="Purpose">Checks, evidence and assessment</td></tr>
+                <tr><td data-label="Route"><code>GET /metrics</code>, <code>/audit-events</code></td><td data-label="Access">Admin</td><td data-label="Purpose">HTTP and provider metrics, audit trail</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Closing CTA -->
+      <section class="section container" aria-labelledby="cta-title">
+        <div class="cta card card--raised">
+          <div>
+            <h2 id="cta-title">Ready to run your first workflow?</h2>
+            <p class="lede">Sign in to the console with your API token, pick a template, validate it and run it.</p>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="/console/">Open the console <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right" /></svg></a>
+            <a class="btn btn--secondary" href="#docs">Read the setup guide</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div class="stack stack--tight">
+            <a class="brand" href="/">
+              <span class="brand__mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#logo" /></svg></span>
+              <span class="brand__name">OAT</span>
+            </a>
+            <p class="muted">Workflow coordination, verification and observability for AI provider calls.</p>
+          </div>
+          <nav aria-labelledby="footer-product">
+            <h2 id="footer-product">Product</h2>
+            <ul>
+              <li><a href="#product">Overview</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#preview">Dashboard</a></li>
+              <li><a href="/console/">Console</a></li>
+            </ul>
+          </nav>
+          <nav aria-labelledby="footer-dev">
+            <h2 id="footer-dev">Developers</h2>
+            <ul>
+              <li><a href="#developers">API examples</a></li>
+              <li><a href="#reference">API reference</a></li>
+              <li><a href="#docs">Getting started</a></li>
+            </ul>
+          </nav>
+          <nav aria-labelledby="footer-status">
+            <h2 id="footer-status">Status</h2>
+            <ul>
+              <li><a href="/api/v1/health">Health endpoint</a></li>
+              <li><a href="/api/v1/health/ready">Readiness endpoint</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="site-footer__base">
+          <span>OAT Agent Infrastructure</span>
+          <a href="#main">Back to top ↑</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/landing/main.ts"></script>
+  </body>
+</html>

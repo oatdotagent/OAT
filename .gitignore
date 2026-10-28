@@ -1,0 +1,11 @@
+node_modules/
+dist/
+data/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+e2e/screenshots/
+branding/*.mp4
+branding/*.wav

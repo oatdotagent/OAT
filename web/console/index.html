@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Console — OAT</title>
+    <meta name="description" content="Manage workflows, executions, verification results and provider health for your OAT server." />
+    <meta name="theme-color" content="#F5F0E6" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/styles/console-entry.css" />
+  </head>
+  <body class="console">
+    <a class="skip-link" href="#app">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="/" aria-label="OAT home">
+          <span class="brand__mark"><svg class="icon" aria-hidden="true"><use href="/icons.svg#logo" /></svg></span>
+          <span class="brand__name">OAT</span>
+          <span class="brand__tag">Console</span>
+        </a>
+        <nav aria-label="Console">
+          <ul class="nav__links" data-console-nav></ul>
+        </nav>
+        <div class="nav__actions">
+          <div class="user-chip" data-user-chip hidden></div>
+          <button class="icon-btn nav__toggle" type="button" aria-expanded="false" aria-controls="console-menu" aria-label="Open menu" data-nav-toggle hidden>
+            <svg class="icon icon-open" aria-hidden="true"><use href="/icons.svg#menu" /></svg>
+            <svg class="icon icon-close" aria-hidden="true"><use href="/icons.svg#x" /></svg>
+          </button>
+        </div>
+      </div>
+      <div class="mobile-menu" id="console-menu" data-nav-menu hidden>
+        <ul data-console-mobile-nav></ul>
+        <div class="mobile-menu__footer" data-console-mobile-footer></div>
+      </div>
+    </header>
+
+    <main id="app" class="container console-main" tabindex="-1">
+      <div class="loading" role="status"><span class="spinner" aria-hidden="true"></span>Loading console…</div>
+      <noscript><div class="alert alert--warn">The console needs JavaScript to talk to the API.</div></noscript>
+    </main>
+
+    <script type="module" src="/src/console/main.ts"></script>
+  </body>
+</html>
