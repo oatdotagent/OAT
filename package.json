@@ -5,7 +5,7 @@
   "description": "AI agent infrastructure backend: API gateway, provider manager, workflow orchestration, verification, observability.",
   "type": "module",
   "engines": {
-    "node": ">=22.13.0"
+    "node": "^22.13.0 || >=24"
   },
   "main": "dist/server.js",
   "scripts": {

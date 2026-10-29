@@ -1,0 +1,46 @@
+# Render Blueprint for OAT: one Node web service that serves the API and the built web frontend.
+# Secrets use `sync: false`: Render asks for their values in the dashboard; they are never stored here.
+services:
+  - type: web
+    name: oat
+    runtime: node
+    # Free plan for now (no persistent disk: the SQLite database resets on every deploy/restart).
+    # For real data, switch to a paid plan and uncomment `disk` below plus DATABASE_PATH=/var/data/oat.db.
+    plan: free
+    region: singapore
+    branch: master
+    # devDependencies (tsc, vite) are needed to build even when NODE_ENV=production.
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/v1/health/ready
+    # disk:
+    #   name: oat-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY
+        value: "true"
+      - key: DATABASE_PATH
+        value: ./data/oat.db
+      - key: PROVIDER_ROUTING
+        value: llm.generate=gemini,web.search=tavily|exa
+      - key: PROVIDER_FALLBACK_ENABLED
+        value: "true"
+      - key: ENABLE_MOCK_PROVIDERS
+        value: "false"
+      - key: AUTH_TOKENS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: EXA_API_KEY
+        sync: false
+      - key: JINA_API_KEY
+        sync: false
