@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 03 (X)</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  .post { position: relative; width: 1600px; height: 900px; overflow: hidden; background: #1d1b17; color: #F5F0E6;
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
+  .glow { position: absolute; }
+  .g1 { width: 1300px; height: 900px; left: -460px; top: -300px; background: radial-gradient(closest-side, rgb(40 150 140 / .55), rgb(40 150 140 / .3) 30%, rgb(40 150 140 / .1) 62%, transparent); }
+  .g2 { width: 1200px; height: 900px; left: 820px; top: -220px; background: radial-gradient(closest-side, rgb(60 115 190 / .5), rgb(60 115 190 / .28) 32%, rgb(60 115 190 / .1) 62%, transparent); }
+  .g3 { width: 1500px; height: 760px; left: 200px; top: 560px; background: radial-gradient(closest-side, rgb(30 130 95 / .45), rgb(30 130 95 / .22) 32%, rgb(30 130 95 / .07) 64%, transparent); }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 80% at 50% 45%, transparent 45%, rgb(12 11 9 / .75) 100%); }
+  .grain { position: absolute; inset: 0; opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .content { position: absolute; inset: 0; padding: 88px 96px 64px; display: grid; grid-template-columns: 640px 1fr; grid-template-rows: 1fr auto; column-gap: 72px; }
+  .copy { align-self: center; }
+  .eyebrow { font-size: 22px; font-weight: 600; letter-spacing: .3em; color: #a9dccd; }
+  h1 { margin: 22px 0 0; text-wrap: balance; font: 700 64px/1.1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: -.005em; }
+  h1 em { display: block; font-weight: 400; color: #a9dccd; }
+  .lede { margin: 30px 0 0; font-size: 28px; line-height: 1.5; color: rgb(245 240 230 / .8); text-wrap: pretty; }
+
+  .trace { align-self: center; border-radius: 24px; background: rgb(20 19 16 / .72); border: 1px solid rgb(245 240 230 / .16);
+    box-shadow: 0 30px 80px rgb(0 0 0 / .35); overflow: hidden; }
+  .bar { display: flex; align-items: center; gap: 10px; padding: 20px 28px; border-bottom: 1px solid rgb(245 240 230 / .1); }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: rgb(245 240 230 / .18); }
+  .bar span { margin-left: 12px; font: 500 20px/1 'Cascadia Code', Consolas, monospace; color: rgb(245 240 230 / .6); }
+  .body { padding: 30px 32px 32px; font-family: 'Cascadia Code', Consolas, monospace; }
+  .step { font-size: 22px; color: rgb(245 240 230 / .65); }
+  .step b { color: #F5F0E6; font-weight: 600; }
+  .row { margin-top: 22px; display: grid; grid-template-columns: 48px 1fr; gap: 18px; align-items: start; padding: 22px 24px; border-radius: 16px; }
+  .row.fail { background: rgb(232 140 130 / .1); border: 1px solid rgb(232 140 130 / .3); }
+  .row.ok { background: rgb(169 220 205 / .1); border: 1px solid rgb(169 220 205 / .35); }
+  .icon { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font: 700 26px/1 'Segoe UI', sans-serif; color: #1d1b17; }
+  .fail .icon { background: #e89a8f; }
+  .ok .icon { background: #a9dccd; }
+  .name { font-size: 27px; font-weight: 600; color: #F5F0E6; }
+  .meta { margin-top: 8px; font-size: 20px; line-height: 1.45; color: rgb(245 240 230 / .7); }
+  .arrow { margin: 14px 0 0 36px; font-size: 20px; color: rgb(245 240 230 / .55); }
+  .result { margin-top: 24px; padding-top: 22px; border-top: 1px solid rgb(245 240 230 / .1); font-size: 21px; color: rgb(245 240 230 / .7); display: flex; justify-content: space-between; }
+  .result b { color: #a9dccd; font-weight: 600; }
+
+  .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .brand svg { width: 48px; height: 48px; }
+  .brand svg * { fill: none; stroke: #F5F0E6; stroke-width: 2; stroke-linecap: round; }
+  .brand span { font: 700 34px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .soon { font-size: 18px; font-weight: 600; letter-spacing: .38em; color: rgb(245 240 230 / .8); }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+  <div class="vignette"></div>
+  <div class="content">
+    <div class="copy">
+      <div class="eyebrow">AUTOMATIC FALLBACK</div>
+      <h1>One provider fails. <em>Your workflow doesn’t.</em></h1>
+      <p class="lede">OAT switches to a compatible provider and records exactly what happened, so nothing breaks silently.</p>
+    </div>
+    <div class="trace">
+      <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>execution trace</span></div>
+      <div class="body">
+        <div class="step">step <b>search</b> · web.search</div>
+        <div class="row fail">
+          <div class="icon">✕</div>
+          <div><div class="name">tavily</div><div class="meta">auth_failed · HTTP 401<br>fallback-eligible</div></div>
+        </div>
+        <div class="arrow">↓ switching to the next provider</div>
+        <div class="row ok">
+          <div class="icon">✓</div>
+          <div><div class="name">exa</div><div class="meta">3 results · 1 attempt</div></div>
+        </div>
+        <div class="result"><span>status <b>succeeded</b></span><span>fallbackFrom <b>["tavily"]</b></span></div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg>
+        <span>OAT</span>
+      </div>
+      <div class="soon">COMING SOON</div>
+    </div>
+  </div>
+  <div class="grain"></div>
+</div>
+</body>
+</html>
