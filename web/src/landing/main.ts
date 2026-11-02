@@ -54,6 +54,14 @@ function initApiStatus(): void {
         setBadge('warn', 'Degraded');
       }
     } catch (err) {
+      // A static host answers /api with a page instead of JSON: this preview has no backend yet.
+      if (err instanceof ApiError && err.code === 'invalid_response') {
+        setBadge('neutral', 'Launching soon');
+        text.textContent = 'The OAT API is not live yet. Follow @getoatsh for the launch.';
+        uptime.textContent = '—';
+        ready.textContent = '—';
+        return;
+      }
       setBadge('err', 'Unreachable');
       text.textContent =
         err instanceof ApiError && err.code !== 'network_error' && err.code !== 'timeout'

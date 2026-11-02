@@ -3,7 +3,7 @@ import { h, icon, replace } from '../lib/dom';
 import { clearToken, getToken } from '../lib/session';
 import { initMobileNav } from '../shared/behaviors';
 import { navSection, parseRoute, type Route } from './router';
-import { errorPanel, loading } from './ui';
+import { card, errorPanel, loading } from './ui';
 import { renderConnect } from './views/connect';
 import { renderExecution, renderExecutions } from './views/executions';
 import { renderMetrics } from './views/metrics';
@@ -47,12 +47,41 @@ async function boot(): Promise<void> {
       showConnect(hadToken ? 'Your saved token was not accepted. Paste a valid token to continue.' : undefined);
       return;
     }
+    // A static host answers /api with a page instead of JSON: this build has no backend behind it yet.
+    if (err instanceof ApiError && err.code === 'invalid_response') {
+      showComingSoon();
+      return;
+    }
     replace(app, h('div', { class: 'connect' }, errorPanel(err, () => void boot())));
     return;
   }
   renderChrome();
   window.addEventListener('hashchange', route);
   route();
+}
+
+function showComingSoon(): void {
+  replace(
+    app,
+    h(
+      'div',
+      { class: 'connect' },
+      card(
+        { title: 'The Console is coming soon', icon: 'info' },
+        h(
+          'div',
+          { class: 'stack' },
+          h('p', { class: 'muted' }, 'This site is a preview. The OAT Console will open here once the API goes live: define workflows, run them across AI providers and verify every output.'),
+          h(
+            'div',
+            { class: 'inline-actions' },
+            h('a', { class: 'btn btn--primary', attrs: { href: 'https://x.com/getoatsh', target: '_blank', rel: 'noopener noreferrer' } }, icon('brand-x'), 'Follow @getoatsh'),
+            h('a', { class: 'btn btn--secondary', attrs: { href: '/' } }, icon('arrow-left'), 'Back to overview'),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 function showConnect(notice?: string): void {

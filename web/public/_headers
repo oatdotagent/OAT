@@ -1,0 +1,7 @@
+# Cloudflare Pages response headers (copied into web/dist by Vite).
+# The icon sprite and favicon are not content-hashed, so browsers must revalidate them
+# instead of caching for hours; otherwise newly added icons render blank until the cache expires.
+/icons.svg
+  Cache-Control: no-cache
+/favicon.svg
+  Cache-Control: no-cache
