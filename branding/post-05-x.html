@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 05 (X) — sneak peek</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  * { box-sizing: border-box; }
+  .post { position: relative; width: 1600px; height: 900px; overflow: hidden; background: #F5F0E6; color: #28251F; font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
+  .content { position: absolute; inset: 0; padding: 80px 96px 60px; display: grid; grid-template-columns: 560px 1fr; grid-template-rows: 1fr auto; column-gap: 56px; }
+  .copy { align-self: center; }
+  .eyebrow { font-size: 21px; font-weight: 600; letter-spacing: .32em; color: #2f5d50; }
+  h1 { margin: 22px 0 0; font: 700 70px/1.06 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; text-wrap: balance; }
+  h1 em { display: block; font-weight: 400; color: #2f5d50; }
+  .lede { margin: 28px 0 0; font-size: 26px; line-height: 1.5; color: rgb(40 37 31 / .72); text-wrap: pretty; }
+
+  .peek { position: relative; align-self: center; height: 560px; }
+  .ui { position: absolute; inset: 0; border-radius: 24px; background: #FFFCF6; border: 1.5px solid rgb(40 37 31 / .12); box-shadow: 0 30px 80px rgb(40 37 31 / .12); overflow: hidden; }
+  .ui .bar { display: flex; align-items: center; gap: 10px; height: 58px; padding: 0 26px; border-bottom: 1px solid rgb(40 37 31 / .08); }
+  .ui .bar i { width: 13px; height: 13px; border-radius: 50%; background: rgb(40 37 31 / .15); }
+  .ui .bar span { margin-left: 12px; font-size: 20px; color: rgb(40 37 31 / .55); }
+  .ui .bar b { margin-left: auto; padding: 7px 16px; border-radius: 999px; font: 600 18px/1 'Segoe UI', sans-serif; color: #FFFCF6; background: #2f5d50; }
+  .ui .head { padding: 28px 36px 6px; }
+  .ui .head h3 { margin: 0; font: 700 40px/1.1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  .ui .head p { margin: 8px 0 0; font-size: 19px; color: rgb(40 37 31 / .55); }
+  .ui .rows { padding: 16px 36px 30px; display: grid; gap: 14px; }
+  .ui .row { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 18px; padding: 18px 22px; border-radius: 16px; background: #F5F0E6; border: 1px solid rgb(40 37 31 / .08); }
+  .ui .ic { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font: 800 26px/1 'Segoe UI', sans-serif; color: #FFFCF6; background: #2f5d50; }
+  .ui .name { font-size: 27px; font-weight: 600; }
+  .ui .meta { margin-top: 5px; font-size: 18px; color: rgb(40 37 31 / .55); }
+  .ui .tag { font-size: 17px; font-weight: 700; letter-spacing: .1em; color: #2f5d50; }
+  #blurred { filter: blur(8px); }
+  #sharp { clip-path: circle(165px at 215px 472px); }
+  .ring { position: absolute; left: 50px; top: 307px; width: 330px; height: 330px; border-radius: 50%; border: 3px solid rgb(47 93 80 / .6); box-shadow: 0 20px 60px rgb(40 37 31 / .18); }
+
+  .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 40px; height: 40px; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
+  .brand span { font: 700 30px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .soon { font-size: 17px; font-weight: 600; letter-spacing: .32em; color: rgb(40 37 31 / .7); }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="content">
+    <div class="copy">
+      <div class="eyebrow">SNEAK PEEK</div>
+      <h1>Something reliable <em>is coming.</em></h1>
+      <p class="lede">AI workflows that retry, fall back, and verify every output before you trust it.</p>
+    </div>
+    <div class="peek">
+      <div class="ui" id="blurred"></div>
+      <div class="ui" id="sharp"></div>
+      <div class="ring"></div>
+    </div>
+    <div class="footer">
+      <div class="brand"><svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg><span>OAT</span></div>
+      <div class="soon">@GETOATSH · COMING SOON</div>
+    </div>
+  </div>
+</div>
+<script>
+  // Same console run as the teaser video; the lens sits on the verification step.
+  const ui = `<div class="bar"><i></i><i></i><i></i><span>OAT Console</span><b>succeeded</b></div>
+    <div class="head"><h3>Research brief</h3><p>3 steps · 2 run in parallel · verification required</p></div>
+    <div class="rows">
+      <div class="row"><div class="ic">✓</div><div><div class="name">search</div><div class="meta">web.search · 1 attempt · fallback ready</div></div><div class="tag">DONE</div></div>
+      <div class="row"><div class="ic">✓</div><div><div class="name">summarize</div><div class="meta">llm.generate · structured output</div></div><div class="tag">DONE</div></div>
+      <div class="row"><div class="ic">✓</div><div><div class="name">verify</div><div class="meta">schema + 3 criteria · evidence stored</div></div><div class="tag">3/3 PASSED</div></div>
+    </div>`;
+  document.getElementById('blurred').innerHTML = ui;
+  document.getElementById('sharp').innerHTML = ui;
+</script>
+</body>
+</html>
