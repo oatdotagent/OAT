@@ -1,30 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500">
-  <defs>
-    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="80"/></filter>
-    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
-      <stop offset="0.45" stop-color="#28251F" stop-opacity="0"/>
-      <stop offset="1" stop-color="#1c1a16" stop-opacity="0.85"/>
-    </radialGradient>
-  </defs>
-  <rect width="1500" height="500" fill="#28251F"/>
-  <!-- Aurora glow, same palette as the profile picture; brightest behind the mark on the right -->
-  <g filter="url(#blur)" opacity="0.9">
-    <ellipse cx="1000" cy="200" rx="330" ry="170" fill="rgb(40,150,140)" opacity="0.55"/>
-    <ellipse cx="1330" cy="140" rx="260" ry="150" fill="rgb(60,115,190)" opacity="0.45"/>
-    <ellipse cx="1180" cy="380" rx="360" ry="150" fill="rgb(30,130,95)" opacity="0.5"/>
-    <ellipse cx="380" cy="120" rx="320" ry="120" fill="rgb(40,150,140)" opacity="0.18"/>
-  </g>
-  <rect width="1500" height="500" fill="url(#vignette)"/>
-  <!-- OAT mark -->
-  <g transform="translate(1210 250) scale(9) translate(-16 -16)" fill="none" stroke="#F5F0E6" stroke-width="2" stroke-linecap="round">
+  <!-- Flat brand cream, same as the website background and the profile picture. -->
+  <rect width="1500" height="500" fill="#F5F0E6"/>
+  <!-- OAT mark on the right -->
+  <g transform="translate(1210 250) scale(9) translate(-16 -16)" fill="none" stroke="#28251F" stroke-width="2" stroke-linecap="round">
     <circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/>
     <path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/>
   </g>
   <!-- Text block (kept above the bottom-left area that the avatar covers) -->
-  <g font-family="'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif" fill="#F5F0E6">
-    <text x="120" y="150" font-family="'Segoe UI',system-ui,Arial,sans-serif" font-size="20" font-weight="600" letter-spacing="3.5" fill="#a9dccd">AGENT INFRASTRUCTURE</text>
+  <g font-family="'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif" fill="#28251F">
+    <text x="120" y="150" font-family="'Segoe UI',system-ui,Arial,sans-serif" font-size="20" font-weight="600" letter-spacing="3.5" fill="#2f5d50">AGENT INFRASTRUCTURE</text>
     <text x="116" y="238" font-size="84" font-weight="700" letter-spacing="1">OAT</text>
     <text x="120" y="296" font-size="34">Coordinate AI providers.</text>
-    <text x="120" y="342" font-size="34" font-style="italic" fill="#a9dccd">Verify what comes back.</text>
+    <text x="120" y="342" font-size="34" font-style="italic" fill="#2f5d50">Verify what comes back.</text>
   </g>
 </svg>

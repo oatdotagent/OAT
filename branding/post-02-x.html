@@ -5,35 +5,35 @@
 <title>OAT post 02 (X)</title>
 <style>
   html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
-  .post { position: relative; width: 1600px; height: 900px; overflow: hidden; background: #1d1b17; color: #F5F0E6;
+  .post { position: relative; width: 1600px; height: 900px; overflow: hidden; background: #F5F0E6; color: #28251F;
     font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
   .glow { position: absolute; }
-  .g1 { width: 1300px; height: 900px; left: -420px; top: -380px; background: radial-gradient(closest-side, rgb(40 150 140 / .6), rgb(40 150 140 / .35) 30%, rgb(40 150 140 / .12) 62%, transparent); }
-  .g2 { width: 1200px; height: 820px; left: 900px; top: -360px; background: radial-gradient(closest-side, rgb(60 115 190 / .5), rgb(60 115 190 / .28) 32%, rgb(60 115 190 / .1) 62%, transparent); }
-  .g3 { width: 1600px; height: 760px; left: 100px; top: 520px; background: radial-gradient(closest-side, rgb(30 130 95 / .5), rgb(30 130 95 / .26) 32%, rgb(30 130 95 / .08) 64%, transparent); }
-  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 80% at 50% 45%, transparent 45%, rgb(12 11 9 / .75) 100%); }
-  .grain { position: absolute; inset: 0; opacity: .05; mix-blend-mode: overlay;
+  .g1 { width: 1300px; height: 900px; left: -420px; top: -380px; background: radial-gradient(closest-side, rgb(40 150 140 / .33), rgb(40 150 140 / .19) 30%, rgb(40 150 140 / .07) 62%, transparent); }
+  .g2 { width: 1200px; height: 820px; left: 900px; top: -360px; background: radial-gradient(closest-side, rgb(60 115 190 / .28), rgb(60 115 190 / .15) 32%, rgb(60 115 190 / .06) 62%, transparent); }
+  .g3 { width: 1600px; height: 760px; left: 100px; top: 520px; background: radial-gradient(closest-side, rgb(30 130 95 / .28), rgb(30 130 95 / .14) 32%, rgb(30 130 95 / .04) 64%, transparent); }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 80% at 50% 45%, transparent 45%, rgb(40 37 31 / .06) 100%); }
+  .grain { position: absolute; inset: 0; opacity: .05; mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   .content { position: absolute; inset: 0; padding: 84px 96px 64px; display: flex; flex-direction: column; }
-  .eyebrow { font-size: 22px; font-weight: 600; letter-spacing: .3em; color: #a9dccd; }
+  .eyebrow { font-size: 22px; font-weight: 600; letter-spacing: .3em; color: #2f5d50; }
   h1 { margin: 22px 0 0; font: 700 84px/1.08 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: -.005em; }
-  h1 em { font-weight: 400; color: #a9dccd; }
-  .lede { margin: 24px 0 0; font-size: 29px; line-height: 1.5; color: rgb(245 240 230 / .78); }
+  h1 em { font-weight: 400; color: #2f5d50; }
+  .lede { margin: 24px 0 0; font-size: 29px; line-height: 1.5; color: rgb(40 37 31 / .78); }
   .steps { margin-top: 64px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .step { padding: 42px 40px 46px; border-radius: 22px; background: rgb(245 240 230 / .06); border: 1px solid rgb(245 240 230 / .14); }
+  .step { padding: 42px 40px 46px; border-radius: 22px; background: rgb(255 252 246 / .9); border: 1px solid rgb(40 37 31 / .06); }
   .head { display: flex; align-items: center; gap: 20px; }
   .num { flex: none; width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
-    font: 700 34px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; color: #1d1b17; background: #F5F0E6; }
-  .step:nth-child(2) .num { background: #a9dccd; }
-  .step:nth-child(3) .num { background: #9fb9e3; }
+    font: 700 34px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; color: #F5F0E6; background: #28251F; }
+  .step:nth-child(2) .num { background: #2f5d50; }
+  .step:nth-child(3) .num { background: #3c5f9e; }
   .step h2 { margin: 0; font: 700 44px/1.1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
-  .step p { margin: 26px 0 0; font-size: 27px; line-height: 1.45; color: rgb(245 240 230 / .8); text-wrap: pretty; }
+  .step p { margin: 26px 0 0; font-size: 27px; line-height: 1.45; color: rgb(40 37 31 / .8); text-wrap: pretty; }
   .footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 16px; }
   .brand svg { width: 48px; height: 48px; }
-  .brand svg * { fill: none; stroke: #F5F0E6; stroke-width: 2; stroke-linecap: round; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
   .brand span { font: 700 34px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
-  .soon { font-size: 18px; font-weight: 600; letter-spacing: .38em; color: rgb(245 240 230 / .8); }
+  .soon { font-size: 18px; font-weight: 600; letter-spacing: .38em; color: rgb(40 37 31 / .8); }
 </style>
 </head>
 <body>

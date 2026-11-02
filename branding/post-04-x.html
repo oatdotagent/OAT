@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 04 (X)</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  .post { position: relative; width: 1600px; height: 900px; overflow: hidden; background: #F5F0E6; color: #28251F; font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
+  .content { position: absolute; inset: 0; padding: 72px 96px 60px; display: flex; flex-direction: column; }
+  .eyebrow { font-size: 21px; font-weight: 600; letter-spacing: .3em; color: #2f5d50; }
+  h1 { margin: 18px 0 0; font: 700 72px/1.06 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  h1 em { font-weight: 400; color: #2f5d50; }
+
+  .chart { position: relative; margin-top: 34px; height: 420px; }
+  .chart svg { position: absolute; inset: 0; overflow: visible; }
+  .step-label { position: absolute; width: 210px; margin-left: -105px; text-align: center; }
+  .step-label .n { font: 600 15px/1 'Cascadia Code', Consolas, monospace; letter-spacing: .12em; color: rgb(40 37 31 / .5); }
+  .step-label .t { margin-top: 8px; font-size: 21px; font-weight: 600; line-height: 1.25; }
+  .step-label.pending .t { color: #b7791f; }
+  .dot { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #2f5d50; color: #FFFCF6; display: grid; place-items: center; font: 800 21px/1 'Segoe UI', sans-serif; box-shadow: 0 0 0 7px #F5F0E6; }
+  .dot.pending { background: #F5F0E6; border: 3px dashed #b7791f; color: #b7791f; }
+
+  .stats { display: flex; gap: 18px; margin-top: auto; }
+  .stat { flex: 1; padding: 20px 26px; border-radius: 18px; background: #FFFCF6; border: 1px solid rgb(40 37 31 / .1); }
+  .stat b { display: block; font: 700 46px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; color: #28251F; }
+  .stat span { display: block; margin-top: 8px; font-size: 18px; color: rgb(40 37 31 / .65); }
+  .stat.accent { background: #2f5d50; border-color: #2f5d50; }
+  .stat.accent b, .stat.accent span { color: #FFFCF6; }
+  .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 26px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 40px; height: 40px; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
+  .brand span { font: 700 30px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .soon { font-size: 17px; font-weight: 600; letter-spacing: .36em; color: rgb(40 37 31 / .7); }
+</style>
+</head>
+<body>
+<div class="post">
+  <div class="content">
+    <div class="eyebrow">BUILD PROGRESS</div>
+    <h1>From first commit <em>to almost live.</em></h1>
+    <div class="chart" id="chart"></div>
+    <div class="stats">
+      <div class="stat"><b>176</b><span>tests passing</span></div>
+      <div class="stat"><b>6</b><span>built-in capabilities</span></div>
+      <div class="stat"><b>4</b><span>providers connected</span></div>
+      <div class="stat accent"><b>5 / 6</b><span>milestones done</span></div>
+    </div>
+    <div class="footer">
+      <div class="brand"><svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg><span>OAT</span></div>
+      <div class="soon">GETOAT.SH · COMING SOON</div>
+    </div>
+  </div>
+</div>
+<script>
+  // Rising staircase of real milestones; the last one is honestly still pending.
+  const steps = [
+    { t: 'Core engine', done: true },
+    { t: 'AI providers connected', done: true },
+    { t: 'Automatic fallback', done: true },
+    { t: 'Verification layer', done: true },
+    { t: '176 tests passing', done: true },
+    { t: 'Going live', done: false },
+  ];
+  const chart = document.getElementById('chart');
+  const W = 1408, H = 420, x0 = 105, x1 = W - 105, yTop = 40, yBot = H - 120;
+  const pts = steps.map((s, i) => ({ ...s, x: x0 + (x1 - x0) * i / (steps.length - 1), y: yBot - (yBot - yTop) * Math.pow(i / (steps.length - 1), 1.35) }));
+  const done = pts.filter((p) => p.done), last = pts[pts.length - 1], prev = done[done.length - 1];
+  const path = done.map((p, i) => (i ? `L${p.x},${p.y}` : `M${p.x},${p.y}`)).join(' ');
+  const area = `${path} L${prev.x},${H - 112} L${x0},${H - 112} Z`;
+  chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2f5d50" stop-opacity=".22"/><stop offset="1" stop-color="#2f5d50" stop-opacity="0"/></linearGradient></defs>
+      ${[0, 1, 2, 3].map((k) => `<line x1="0" x2="${W}" y1="${yTop + (yBot - yTop) * k / 3}" y2="${yTop + (yBot - yTop) * k / 3}" stroke="rgb(40 37 31 / .07)" stroke-width="1"/>`).join('')}
+      <path d="${area}" fill="url(#fill)"/>
+      <path d="${path}" fill="none" stroke="#2f5d50" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M${prev.x},${prev.y} L${last.x},${last.y}" fill="none" stroke="#b7791f" stroke-width="4" stroke-dasharray="4 12" stroke-linecap="round"/>
+    </svg>` +
+    pts.map((p, i) => `<div class="dot ${p.done ? '' : 'pending'}" style="left:${p.x}px;top:${p.y}px">${p.done ? '✓' : '…'}</div>
+      <div class="step-label ${p.done ? '' : 'pending'}" style="left:${p.x}px;top:${Math.min(p.y + 34, H - 96)}px"><div class="n">${String(i + 1).padStart(2, '0')}</div><div class="t">${p.t}</div></div>`).join('');
+</script>
+</body>
+</html>
