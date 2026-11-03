@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 12 (X) — coding in progress</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; background: #F5F0E6; }
+  * { box-sizing: border-box; }
+  .aurora { position: absolute; }
+  .a1 { width: 1100px; height: 900px; left: -320px; top: -280px; background: radial-gradient(closest-side, rgb(40 150 140 / .34), rgb(40 150 140 / .16) 45%, transparent); }
+  .a2 { width: 900px; height: 760px; left: 880px; top: -320px; background: radial-gradient(closest-side, rgb(60 115 190 / .24), rgb(60 115 190 / .1) 50%, transparent); }
+  .a3 { width: 1100px; height: 760px; left: 240px; top: 420px; background: radial-gradient(closest-side, rgb(30 130 95 / .26), rgb(30 130 95 / .1) 50%, transparent); }
+  .content { position: relative; width: 1600px; height: 900px; padding: 64px 72px 46px; display: grid; grid-template-columns: 440px 1fr; grid-template-rows: 1fr auto; column-gap: 52px; color: #28251F; font-family: 'Segoe UI', system-ui, Arial, sans-serif; overflow: hidden; }
+  .copy { align-self: center; }
+  .badge { display: inline-flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 999px; background: #2f5d50; color: #FFFCF6; font-size: 20px; font-weight: 700; white-space: nowrap; }
+  .badge i { width: 11px; height: 11px; border-radius: 50%; background: #FFFCF6; }
+  h1 { margin: 28px 0 0; font: 700 88px/1.02 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  h1 em { display: block; font-weight: 400; color: #2f5d50; }
+  .lede { margin: 26px 0 0; font-size: 28px; line-height: 1.4; color: rgb(40 37 31 / .76); }
+  .win { align-self: center; border-radius: 24px; background: #FFFCF6; border: 1px solid rgb(40 37 31 / .12); box-shadow: 0 34px 90px rgb(40 37 31 / .16); overflow: hidden; }
+  .bar { display: flex; align-items: center; gap: 10px; padding: 18px 24px; border-bottom: 1px solid rgb(40 37 31 / .1); background: #F5F0E6; }
+  .bar u { width: 14px; height: 14px; border-radius: 50%; background: rgb(40 37 31 / .18); }
+  .bar span { margin-left: 14px; font: 500 21px 'Cascadia Code', Consolas, monospace; color: rgb(40 37 31 / .72); }
+  .code { padding: 24px 26px 26px 14px; font: 25px/1.6 'Cascadia Code', Consolas, monospace; white-space: pre; }
+  .ln { display: flex; }
+  .ln i { flex: none; width: 58px; padding-right: 22px; text-align: right; font-style: normal; color: rgb(40 37 31 / .32); }
+  .k { color: #1f7a6c; font-weight: 600; } .s { color: #9a6a10; } .t { color: #2f5d90; } .n { color: #b0473a; } .c { color: rgb(40 37 31 / .5); font-style: italic; }
+  .term { padding: 28px 34px 32px; font: 28px/1.6 'Cascadia Code', Consolas, monospace; white-space: pre-wrap; }
+  .term .p { color: #1f7a6c; font-weight: 700; } .term .ok { color: #2f5d50; font-weight: 700; } .term .m { color: rgb(40 37 31 / .55); }
+  .cursor { display: inline-block; width: 15px; height: 30px; margin-left: 6px; vertical-align: -5px; background: #2f5d50; }
+  .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-top: 16px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 40px; height: 40px; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
+  .brand b { font: 700 30px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .note { font-size: 20px; color: rgb(40 37 31 / .75); }
+  .handle { font-size: 19px; font-weight: 700; letter-spacing: .24em; color: rgb(40 37 31 / .75); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="aurora a1"></div><div class="aurora a2"></div><div class="aurora a3"></div>
+<div class="content">
+  <div class="copy">
+    <div class="badge"><i></i>Big update · In progress</div>
+    <h1>Deep in <em>the code.</em></h1>
+    <p class="lede">Every cited link has to trace back to its source.</p>
+  </div>
+  <div class="win">
+    <div class="bar"><u></u><u></u><u></u><span>src/orchestration/definition.ts</span></div>
+    <div class="code"><div class="ln"><i>52</i><span><span class="c">    // Grounding check: every URL found at `path` must appear in the output of `sourceStep`.</span></span></div><div class="ln"><i>53</i><span>    <span class="k">type</span>: z.literal(<span class="s">'urls_in_step'</span>),</span></div><div class="ln"><i>54</i><span>    path,</span></div><div class="ln"><i>55</i><span>    sourceStep: z.string().min(<span class="n">1</span>).max(<span class="n">64</span>),</span></div><div class="ln"><i>56</i><span>    sourcePath: path.<span class="k">default</span>(<span class="s">'results[*].url'</span>),</span></div><div class="ln"><i>57</i><span>    minUrls: z.number().int().min(<span class="n">0</span>).<span class="k">default</span>(<span class="n">1</span>),</span></div><div class="ln"><i>58</i><span>    description: z.string().max(<span class="n">300</span>).optional(),</span></div><div class="ln"><i>59</i><span>  }),</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand"><svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg><b>OAT</b></div>
+    <div class="note">Real OAT code. Product still in build. Not financial advice.</div>
+    <div class="handle">GETOAT.SH</div>
+  </div>
+</div>
+</body>
+</html>

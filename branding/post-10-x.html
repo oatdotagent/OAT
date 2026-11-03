@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 10 (X) — build update</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  * { box-sizing: border-box; }
+  .post { position: relative; width: 1600px; height: 900px; padding: 70px 96px 52px; display: grid; grid-template-columns: 1fr 760px; grid-template-rows: 1fr auto; column-gap: 64px; background: #F5F0E6; color: #28251F; font-family: 'Segoe UI', system-ui, Arial, sans-serif; overflow: hidden; }
+  .aurora { position: absolute; pointer-events: none; }
+  .a1 { width: 1100px; height: 900px; left: -320px; top: -280px; background: radial-gradient(closest-side, rgb(40 150 140 / .34), rgb(40 150 140 / .16) 45%, transparent); }
+  .a2 { width: 900px; height: 760px; left: 880px; top: -320px; background: radial-gradient(closest-side, rgb(60 115 190 / .24), rgb(60 115 190 / .1) 50%, transparent); }
+  .a3 { width: 1100px; height: 760px; left: 240px; top: 420px; background: radial-gradient(closest-side, rgb(30 130 95 / .26), rgb(30 130 95 / .1) 50%, transparent); }
+  .copy, .card, .footer { position: relative; }
+  .copy { align-self: center; }
+  .badge { display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 999px; background: #2f5d50; color: #FFFCF6; font-size: 21px; font-weight: 700; }
+  .badge i { width: 11px; height: 11px; border-radius: 50%; background: #FFFCF6; }
+  h1 { margin: 30px 0 0; font: 700 112px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  h1 em { display: block; font-weight: 400; color: #2f5d50; }
+  .lede { margin: 30px 0 0; font-size: 30px; line-height: 1.4; color: rgb(40 37 31 / .76); text-wrap: pretty; }
+  .card { align-self: center; padding: 22px 40px; border-radius: 30px; background: #FFFCF6; border: 1px solid rgb(40 37 31 / .1); box-shadow: 0 34px 90px rgb(40 37 31 / .14); }
+  .item { display: flex; align-items: center; gap: 24px; padding: 21px 0; border-bottom: 1px solid rgb(40 37 31 / .1); }
+  .item:last-child { border-bottom: 0; }
+  .ic { flex: none; width: 54px; height: 54px; display: grid; place-items: center; border-radius: 16px; background: #2f5d50; color: #FFFCF6; font: 800 28px/1 'Segoe UI', sans-serif; }
+  .next .ic { background: transparent; border: 2.5px solid #2f5d50; color: #2f5d50; }
+  .item b { display: block; font-size: 31px; line-height: 1.2; }
+  .item span { display: block; margin-top: 3px; font-size: 22px; line-height: 1.3; color: rgb(40 37 31 / .68); }
+  .next b { color: #2f5d50; }
+  .footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-top: 18px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 40px; height: 40px; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
+  .brand b { font: 700 30px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .note { font-size: 20px; color: rgb(40 37 31 / .75); }
+  .handle { font-size: 19px; font-weight: 700; letter-spacing: .24em; color: rgb(40 37 31 / .75); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="post content">
+  <div class="aurora a1"></div><div class="aurora a2"></div><div class="aurora a3"></div>
+  <div class="copy">
+    <div class="badge"><i></i>Build update</div>
+    <h1>Still building. <em>Still shipping.</em></h1>
+    <p class="lede">What moved forward on OAT, and what comes next.</p>
+  </div>
+  <div class="card">
+    <div class="item"><div class="ic">✓</div><div><b>Security headers live</b><span>HSTS, CSP and more on getoat.sh</span></div></div>
+    <div class="item"><div class="ic">✓</div><div><b>Workflow edit and delete</b><span>Built and tested, ships with the Console</span></div></div>
+    <div class="item"><div class="ic">✓</div><div><b>Tested on real runs</b><span>Provider fallback and fake-source checks</span></div></div>
+    <div class="item"><div class="ic">✓</div><div><b>Official CA on the website</b><span>Always verify it at getoat.sh</span></div></div>
+    <div class="item next"><div class="ic">→</div><div><b>Next: opening the Console</b><span>Hosted API and public access. No date yet.</span></div></div>
+  </div>
+  <div class="footer">
+    <div class="brand"><svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg><b>OAT</b></div>
+    <div class="note">Product still in build. Not financial advice.</div>
+    <div class="handle">GETOAT.SH</div>
+  </div>
+</div>
+</body>
+</html>
