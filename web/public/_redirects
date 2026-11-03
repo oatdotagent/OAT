@@ -1,0 +1,3 @@
+# Cloudflare Pages: the Console and API run on app.getoat.sh.
+/console /console/ 301
+/console/* https://app.getoat.sh/console/:splat 302

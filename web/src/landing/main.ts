@@ -55,11 +55,11 @@ function initApiStatus(): void {
         setBadge('warn', 'Degraded');
       }
     } catch (err) {
-      // A static host answers /api with a page instead of JSON: this preview has no backend yet.
+      // A static host answers /api with a page instead of JSON: the API runs on app.getoat.sh.
       if (err instanceof ApiError && err.code === 'invalid_response') {
-        setBadge('neutral', 'Launching soon');
-        text.textContent = 'The OAT API is not live yet. Follow @getoatsh for the launch.';
-        note.textContent = 'This site is a preview. Live server status will appear here once the API goes live.';
+        setBadge('neutral', 'Private beta');
+        text.textContent = 'OAT is in private beta. Join the waitlist for access.';
+        note.textContent = 'Live server status is not shown on this page.';
         uptime.textContent = '—';
         ready.textContent = '—';
         return;
