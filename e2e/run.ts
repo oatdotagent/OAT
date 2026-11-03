@@ -125,8 +125,11 @@ async function landingChecks(browser: Browser) {
   await page.waitForTimeout(400);
   check((await toggle.getAttribute('aria-expanded')) === 'false' && !(await page.locator('#mobile-menu').isVisible()), 'mobile: menu closes after choosing a link');
   check(page.url().endsWith('#features'), 'mobile: link navigates to #features');
-  const featuresTop = await page.locator('#features').evaluate((el) => el.getBoundingClientRect().top);
-  check(featuresTop < 200, 'mobile: features section scrolled into view');
+  // Smooth scrolling takes longer on a taller page, so wait for it to settle rather than a fixed delay.
+  const settled = await page
+    .waitForFunction(() => (document.querySelector('#features')?.getBoundingClientRect().top ?? 9999) < 200, undefined, { timeout: 5000 })
+    .then(() => true, () => false);
+  check(settled, 'mobile: features section scrolled into view');
   await toggle.click();
   await page.keyboard.press('Escape');
   check((await toggle.getAttribute('aria-expanded')) === 'false', 'mobile: Escape closes the menu');
@@ -173,7 +176,9 @@ async function landingChecks(browser: Browser) {
   check((await d.locator('#panel-json [data-copy-label]').textContent()) === 'Copied', 'copy button confirms');
   check((await d.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)) === 'auto', 'reduced motion: smooth scrolling disabled');
   const cta = d.locator('.hero .btn--primary');
-  check((await cta.getAttribute('href'))?.startsWith('https://docs.google.com/forms/') && (await cta.getAttribute('target')) === '_blank', 'hero primary CTA opens the waitlist in a new tab');
+  check((await cta.getAttribute('href')) === '#docs', 'hero primary CTA opens the getting started section');
+  await d.locator('.hero__install .copy-btn').click();
+  check((await d.evaluate(() => navigator.clipboard.readText())) === 'npx getoat', 'hero: copy button copies the install command');
   await d.locator('.site-footer__ca .copy-btn').click();
   check((await d.evaluate(() => navigator.clipboard.readText())) === '0x001b8006f91d3345a9a98d426d84488b917139a0', 'footer: copy button copies the exact contract address');
   await d.locator('.site-footer a[href="/console/"]').click();

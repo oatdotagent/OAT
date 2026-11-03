@@ -57,8 +57,8 @@ function initApiStatus(): void {
     } catch (err) {
       // A static host answers /api with a page instead of JSON: the API runs on app.getoat.sh.
       if (err instanceof ApiError && err.code === 'invalid_response') {
-        setBadge('neutral', 'Private beta');
-        text.textContent = 'OAT is in private beta. Join the waitlist for access.';
+        setBadge('neutral', 'Run it locally');
+        text.textContent = 'Start OAT with npx getoat. Hosted access is in private beta.';
         note.textContent = 'Live server status is not shown on this page.';
         uptime.textContent = '—';
         ready.textContent = '—';

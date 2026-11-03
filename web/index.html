@@ -67,9 +67,13 @@
             OAT runs declarative workflows across model, search, retrieval and developer APIs — with retries, fallbacks and
             timeouts handled — then checks every output against criteria you define and records the evidence.
           </p>
+          <div class="code code--compact hero__install">
+            <div class="code__bar"><span>Run it on your computer</span><button class="copy-btn" type="button" data-copy-target="#hero-install"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button></div>
+            <pre><code id="hero-install">npx getoat</code></pre>
+          </div>
           <div class="btn-row hero__ctas">
-            <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfagIvAOus5Na0lAAoUpNS4wY_9UKLJHr9GFxUX4qsqO2gkIQ/viewform" target="_blank" rel="noopener noreferrer">
-              Join the waitlist
+            <a class="btn btn--primary" href="#docs">
+              Get started
               <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right" /></svg>
             </a>
             <a class="btn btn--secondary" href="#developers">
@@ -376,6 +380,16 @@ console.log(execution.status, execution.steps);</code></pre>
           <p class="lede">Everything runs locally with Node 22.13 or newer. Provider keys are optional — each integration stays off until configured.</p>
         </div>
 
+        <div class="card start start--quick">
+          <h3>Fastest way: run it with npx</h3>
+          <div class="code code--compact">
+            <div class="code__bar"><span>shell</span><button class="copy-btn" type="button" data-copy-target="#start-npx"><svg class="icon" aria-hidden="true"><use href="/icons.svg#copy" /></svg><span data-copy-label>Copy</span></button></div>
+            <pre><code id="start-npx">npx getoat</code></pre>
+          </div>
+          <p class="muted">The first run asks for your API keys, then opens the Console. Your keys and data stay on your computer, and each provider bills your own account. To try it without keys, run <code>npx getoat --mock</code> for labelled sample output.</p>
+        </div>
+
+        <h3 class="start-source">Or run it from source</h3>
         <ol class="start-grid">
           <li class="card start">
             <h3><span class="start__num">1</span>Install</h3>
@@ -439,8 +453,8 @@ npm start</code></pre>
       <section class="section container" aria-labelledby="cta-title">
         <div class="cta card card--raised">
           <div>
-            <h2 id="cta-title">Be among the first to run a workflow.</h2>
-            <p class="lede">The Console isn't open yet. Join the waitlist and we'll email you when access opens.</p>
+            <h2 id="cta-title">Run your first workflow today.</h2>
+            <p class="lede">Start OAT on your computer with <code>npx getoat</code> and your own API keys. Hosted access is in private beta, and the waitlist is open.</p>
           </div>
           <div class="btn-row">
             <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfagIvAOus5Na0lAAoUpNS4wY_9UKLJHr9GFxUX4qsqO2gkIQ/viewform" target="_blank" rel="noopener noreferrer">Join the waitlist <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-right" /></svg></a>

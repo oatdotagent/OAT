@@ -549,3 +549,20 @@
     display: none;
   }
 }
+
+/* ---------- npx install blocks ---------- */
+.hero__install {
+  margin-top: var(--space-4);
+}
+.hero__install + .hero__ctas {
+  margin-top: var(--space-4);
+}
+.start--quick {
+  margin-bottom: var(--space-5);
+}
+.start--quick .muted {
+  margin: var(--space-3) 0 0;
+}
+.start-source {
+  margin: 0 0 var(--space-3);
+}
