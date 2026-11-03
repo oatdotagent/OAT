@@ -2,6 +2,7 @@ node_modules/
 dist/
 data/
 coverage/
+.vitest/
 .env
 .env.*
 !.env.example

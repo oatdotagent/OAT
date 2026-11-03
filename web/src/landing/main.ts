@@ -17,6 +17,7 @@ function initApiStatus(): void {
   const uptime = card.querySelector<HTMLElement>('[data-status-uptime]')!;
   const ready = card.querySelector<HTMLElement>('[data-status-ready]')!;
   const refresh = card.querySelector<HTMLButtonElement>('[data-status-refresh]')!;
+  const note = card.querySelector<HTMLElement>('[data-status-note]')!;
   const api = createApi({ timeoutMs: 8000 });
 
   const setBadge = (tone: string, label: string, loading = false) => {
@@ -58,6 +59,7 @@ function initApiStatus(): void {
       if (err instanceof ApiError && err.code === 'invalid_response') {
         setBadge('neutral', 'Launching soon');
         text.textContent = 'The OAT API is not live yet. Follow @getoatsh for the launch.';
+        note.textContent = 'This site is a preview. Live server status will appear here once the API goes live.';
         uptime.textContent = '—';
         ready.textContent = '—';
         return;
