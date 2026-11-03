@@ -16,15 +16,17 @@ import type { FetchFn } from './types.js';
  */
 export function buildProviderManager(
   env: Env,
-  extra: Pick<ProviderManagerOptions, 'onCall' | 'sleep'> & { fetchImpl?: FetchFn; lookup?: ProviderManagerOptions['ssrf']['lookup'] } = {},
+  extra: Pick<ProviderManagerOptions, 'onCall' | 'onRetry' | 'sleep'> & { fetchImpl?: FetchFn; lookup?: ProviderManagerOptions['ssrf']['lookup'] } = {},
 ): ProviderManager {
   const manager = new ProviderManager({
     timeoutMs: env.PROVIDER_TIMEOUT_MS,
+    llmTimeoutMs: env.LLM_TIMEOUT_MS,
     maxRetries: env.PROVIDER_MAX_RETRIES,
     fallbackEnabled: env.PROVIDER_FALLBACK_ENABLED,
     routing: parseRouting(env.PROVIDER_ROUTING),
     ssrf: { allowedHosts: env.SSRF_ALLOWED_HOSTS, blockedHosts: env.SSRF_BLOCKED_HOSTS, lookup: extra.lookup },
     onCall: extra.onCall,
+    onRetry: extra.onRetry,
     sleep: extra.sleep,
   });
   const fetchImpl = extra.fetchImpl;

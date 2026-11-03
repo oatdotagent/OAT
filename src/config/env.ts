@@ -78,6 +78,7 @@ const envSchema = z
 
     // Provider manager
     PROVIDER_TIMEOUT_MS: int(30_000, 1000, 600_000),
+    LLM_TIMEOUT_MS: int(120_000, 1000, 600_000),
     PROVIDER_MAX_RETRIES: int(2, 0, 5),
     PROVIDER_FALLBACK_ENABLED: bool(true),
     PROVIDER_ROUTING: csv, // e.g. "web.search=tavily|exa,text.rerank=jina"

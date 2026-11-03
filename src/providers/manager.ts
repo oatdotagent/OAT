@@ -42,14 +42,27 @@ export interface InvokeResult {
   fallbackFrom: string[];
 }
 
+export interface ProviderRetry {
+  provider: string;
+  capability: CapabilityName;
+  errorCode: ProviderErrorCode;
+  attempt: number;
+  delayMs: number;
+  executionId?: string;
+}
+
 export interface ProviderManagerOptions {
   timeoutMs: number;
+  /** Per-attempt timeout for llm.generate, since model replies take far longer than other calls. */
+  llmTimeoutMs?: number;
   maxRetries: number;
   fallbackEnabled: boolean;
   /** capability → ordered provider ids, e.g. { 'web.search': ['tavily', 'exa'] } */
   routing?: Partial<Record<CapabilityName, string[]>>;
   ssrf: SsrfPolicy;
   onCall?: (record: ProviderCallRecord) => void;
+  /** Called for each failed attempt that will be retried; final outcomes go to onCall. */
+  onRetry?: (retry: ProviderRetry) => void;
   baseDelayMs?: number;
   maxDelayMs?: number;
   sleep?: (ms: number, signal: AbortSignal) => Promise<void>;
@@ -261,7 +274,7 @@ export class ProviderManager {
     options: InvokeOptions,
   ): Promise<Omit<InvokeResult, 'fallbackFrom'>> {
     const maxRetries = options.maxRetries ?? this.opts.maxRetries;
-    const timeoutMs = options.timeoutMs ?? this.opts.timeoutMs;
+    const timeoutMs = options.timeoutMs ?? (capability === 'llm.generate' ? this.opts.llmTimeoutMs : undefined) ?? this.opts.timeoutMs;
     const sleep = this.opts.sleep ?? defaultSleep;
     const started = performance.now();
     let attempts = 0;
@@ -319,8 +332,14 @@ export class ProviderManager {
           });
           throw pe;
         }
+        const delayMs = this.backoffMs(attempts, pe.options.retryAfterMs);
         try {
-          await sleep(this.backoffMs(attempts, pe.options.retryAfterMs), signal);
+          this.opts.onRetry?.({ provider: adapter.id, capability, errorCode: pe.code, attempt: attempts, delayMs, executionId: options.executionId });
+        } catch {
+          // Observability must never break a provider call.
+        }
+        try {
+          await sleep(delayMs, signal);
         } catch {
           throw new ProviderError('cancelled', adapter.id, 'Request cancelled during backoff');
         }

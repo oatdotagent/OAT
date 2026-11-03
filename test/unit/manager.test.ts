@@ -51,6 +51,54 @@ function manager(adapters: ProviderAdapter[], opts: Partial<ProviderManagerOptio
 }
 
 describe('ProviderManager', () => {
+  it('gives AI text generation its own timeout, and a step timeout still wins', async () => {
+    const seen: number[] = [];
+    const capture = (id: string, capability: CapabilityName, output: unknown): ProviderAdapter => ({
+      id,
+      displayName: id,
+      isMock: false,
+      capabilities: [capability],
+      isConfigured: () => true,
+      invoke: async (_c, _i, ctx) => {
+        seen.push(ctx.timeoutMs);
+        return { output };
+      },
+    });
+    const { m } = manager(
+      [capture('llm', 'llm.generate', { text: 'ok', model: 'm', stopReason: null }), capture('web', 'web.search', { results: [] })],
+      { llmTimeoutMs: 5000 },
+    );
+    await m.invoke('llm.generate', { prompt: 'hi' });
+    await m.invoke('web.search', { query: 'q' });
+    await m.invoke('llm.generate', { prompt: 'hi' }, { timeoutMs: 9000 });
+    expect(seen).toEqual([5000, 1000, 9000]);
+  });
+
+  it('reports each retried attempt, and a failing listener cannot break the call', async () => {
+    const retries: unknown[] = [];
+    const a = new ScriptedAdapter('a', ['web.search'], ['timeout', 'upstream_error', searchOk()]);
+    const { m } = manager([a], {
+      onRetry: (r) => {
+        retries.push(r);
+        throw new Error('listener failed');
+      },
+    });
+    await expect(m.invoke('web.search', { query: 'q' })).resolves.toMatchObject({ attempts: 3 });
+    expect(retries).toEqual([
+      expect.objectContaining({ provider: 'a', capability: 'web.search', errorCode: 'timeout', attempt: 1 }),
+      expect.objectContaining({ provider: 'a', capability: 'web.search', errorCode: 'upstream_error', attempt: 2 }),
+    ]);
+  });
+
+  it('does not retry a used-up quota and reports no retry for it', async () => {
+    const retries: unknown[] = [];
+    const a = new ScriptedAdapter('a', ['web.search'], ['quota_exceeded']);
+    const { m } = manager([a], { onRetry: (r) => retries.push(r) });
+    await expect(m.invoke('web.search', { query: 'q' })).rejects.toMatchObject({ code: 'quota_exceeded' });
+    expect(a.calls).toBe(1);
+    expect(retries).toEqual([]);
+  });
+
   it('retries retryable errors with exponential backoff, then succeeds', async () => {
     const a = new ScriptedAdapter('a', ['web.search'], ['timeout', 'upstream_error', searchOk()]);
     const { m, sleeps, records } = manager([a]);

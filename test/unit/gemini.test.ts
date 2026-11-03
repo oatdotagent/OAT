@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GeminiAdapter } from '../../src/providers/adapters/gemini.js';
+import { classifyQuotaError, GeminiAdapter } from '../../src/providers/adapters/gemini.js';
 import { ProviderError } from '../../src/providers/errors.js';
 import type { InvokeContext } from '../../src/providers/types.js';
 import { hang, json, mockFetch, type Route } from '../helpers/fetch.js';
@@ -73,6 +73,35 @@ describe('GeminiAdapter', () => {
       make(() => json({ error: { code: 429, status: 'RESOURCE_EXHAUSTED', message: 'Quota exceeded' } }, 429, { 'retry-after': '7' })).adapter.invoke('llm.generate', { prompt: 'x' }, ctx()),
     );
     expect(err).toMatchObject({ code: 'rate_limited', retryable: true, options: { status: 429, retryAfterMs: 7000 } });
+  });
+
+  it('uses the retry delay from the error body when a per-minute limit has no Retry-After header', async () => {
+    const body = { error: { status: 'RESOURCE_EXHAUSTED', message: 'Quota exceeded', details: [
+      { '@type': 'type.googleapis.com/google.rpc.QuotaFailure', violations: [{ quotaId: 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier' }] },
+      { '@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: '12.5s' },
+    ] } };
+    const err = await providerError(make(() => json(body, 429)).adapter.invoke('llm.generate', { prompt: 'hi' }, ctx()));
+    expect(err).toMatchObject({ code: 'rate_limited', retryable: true, options: { retryAfterMs: 12_500 } });
+  });
+
+  it('caps a very long stated retry delay', () => {
+    const body = JSON.stringify({ error: { details: [{ retryDelay: '900s' }] } });
+    expect(classifyQuotaError(429, body)).toEqual({ retryAfterMs: 60_000 });
+  });
+
+  it('does not retry when the daily quota is used up, and says so plainly', async () => {
+    const body = { error: { status: 'RESOURCE_EXHAUSTED', message: 'Quota exceeded', details: [
+      { '@type': 'type.googleapis.com/google.rpc.QuotaFailure', violations: [{ quotaId: 'GenerateRequestsPerDayPerProjectPerModel-FreeTier' }] },
+      { '@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: '57563s' },
+    ] } };
+    const err = await providerError(make(() => json(body, 429)).adapter.invoke('llm.generate', { prompt: 'hi' }, ctx()));
+    expect(err).toMatchObject({ code: 'quota_exceeded', retryable: false, options: { status: 429 } });
+    expect(err.message).toMatch(/daily quota/i);
+  });
+
+  it('leaves other statuses and unreadable bodies to the default mapping', () => {
+    expect(classifyQuotaError(500, '{}')).toBeUndefined();
+    expect(classifyQuotaError(429, 'not json')).toBeUndefined();
   });
 
   it('maps an invalid key (HTTP 400 API_KEY_INVALID) to auth_failed without echoing the key', async () => {

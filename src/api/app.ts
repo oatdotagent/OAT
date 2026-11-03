@@ -99,6 +99,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
       fetchImpl: deps.fetchImpl,
       lookup: deps.lookup,
       sleep: deps.sleep,
+      onRetry: (retry) => app.log.warn(retry, 'provider attempt failed, retrying'),
       onCall: (record) => {
         try {
           repos.recordProviderCall(record);
@@ -270,6 +271,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
     await app.register(fastifyStatic, {
       root: webRoot,
       prefix: '/',
+      wildcard: true, // serves files per request; the plugin only walks the folder with glob when this is false
       index: ['index.html'],
       redirect: true,
       dotfiles: 'deny',

@@ -1,6 +1,6 @@
 {
   "name": "getoat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run AI workflows across providers on your own computer, with automatic fallback and verified outputs.",
   "keywords": ["ai", "agents", "workflow", "llm", "verification", "fallback", "cli"],
   "homepage": "https://getoat.sh",
@@ -45,11 +45,14 @@
     "@fastify/cors": "^11.3.1",
     "@fastify/helmet": "^13.2.0",
     "@fastify/rate-limit": "^11.2.1",
-    "@fastify/static": "^10.1.7",
+    "@fastify/static": "^10.1.8",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "fastify": "^5.12.7",
     "zod": "^4.6.7"
+  },
+  "overrides": {
+    "glob": "^14.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

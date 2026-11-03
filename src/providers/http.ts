@@ -1,4 +1,4 @@
-import { ProviderError, codeForStatus, parseRetryAfter } from './errors.js';
+import { ProviderError, codeForStatus, parseRetryAfter, type ProviderErrorCode } from './errors.js';
 import type { FetchFn, InvokeContext } from './types.js';
 
 const MAX_RESPONSE_BYTES = 10 * 1_048_576;
@@ -11,6 +11,14 @@ export interface JsonRequest {
   body?: unknown;
   fetchImpl: FetchFn;
   ctx: InvokeContext;
+  /** Lets an adapter refine a failed response using details only that provider's error body carries. */
+  classifyError?: (status: number, body: string) => ErrorOverride | undefined;
+}
+
+export interface ErrorOverride {
+  code?: ProviderErrorCode;
+  message?: string;
+  retryAfterMs?: number;
 }
 
 /**
@@ -64,9 +72,10 @@ export async function requestJson(req: JsonRequest): Promise<unknown> {
     const retryAfterMs = parseRetryAfter(res.headers.get('retry-after'));
     // Include a short slice of the body for diagnosis; ProviderError redacts it.
     const snippet = text.slice(0, 300).replace(/\s+/g, ' ');
-    throw new ProviderError(codeForStatus(res.status), req.provider, `HTTP ${res.status}: ${snippet}`, {
+    const override = req.classifyError?.(res.status, text);
+    throw new ProviderError(override?.code ?? codeForStatus(res.status), req.provider, override?.message ?? `HTTP ${res.status}: ${snippet}`, {
       status: res.status,
-      retryAfterMs,
+      retryAfterMs: override?.retryAfterMs ?? retryAfterMs,
     });
   }
 

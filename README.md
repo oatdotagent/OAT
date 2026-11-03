@@ -66,7 +66,7 @@ src/
 - validates the input
 - runs the SSRF preflight for URL inputs
 - picks providers using the configured routing (healthy ones first)
-- applies a per-attempt timeout
+- applies a per-attempt timeout, longer for AI text generation (`LLM_TIMEOUT_MS`)
 - retries timeouts, 429s, 5xx and network errors with exponential backoff and jitter, honouring `Retry-After`
 - validates the adapter's output against the contract
 - restricts a capability to the providers named in `PROVIDER_ROUTING` (for example `llm.generate=gemini`). The routing is strict: if no routed provider is configured, the capability is unavailable and the API names the missing setting, with no silent switch to another provider or the mock.

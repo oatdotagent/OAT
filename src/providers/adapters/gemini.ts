@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { CapabilityInput, CapabilityName } from '../capabilities.js';
 import { ProviderError } from '../errors.js';
-import { requestJson } from '../http.js';
+import { requestJson, type ErrorOverride } from '../http.js';
 import type { AdapterResult, FetchFn, InvokeContext, ProviderAdapter } from '../types.js';
 import { parseUpstream, unsupported } from './shared.js';
 
@@ -93,6 +93,7 @@ export class GeminiAdapter implements ProviderAdapter {
         },
         fetchImpl: this.fetchImpl,
         ctx,
+        classifyError: classifyQuotaError,
       });
     } catch (err) {
       throw normalizeKeyError(err);
@@ -134,6 +135,39 @@ export class GeminiAdapter implements ProviderAdapter {
       throw normalizeKeyError(err);
     }
   }
+}
+
+const quotaError = z.object({
+  error: z.object({
+    details: z
+      .array(
+        z.looseObject({
+          violations: z.array(z.looseObject({ quotaId: z.string().optional() })).optional(),
+          retryDelay: z.string().optional(),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+/**
+ * A 429 can mean a per-minute limit, which is worth retrying after the delay Gemini states in the body,
+ * or a daily limit, which retrying cannot fix: that becomes quota_exceeded, so it fails at once and clearly.
+ */
+export function classifyQuotaError(status: number, body: string): ErrorOverride | undefined {
+  if (status !== 429) return undefined;
+  let details: z.infer<typeof quotaError>['error']['details'];
+  try {
+    details = quotaError.parse(JSON.parse(body)).error.details;
+  } catch {
+    return undefined;
+  }
+  const daily = details?.some((d) => d.violations?.some((v) => /PerDay/i.test(v.quotaId ?? '')));
+  if (daily) {
+    return { code: 'quota_exceeded', message: 'Gemini daily quota is used up. It resets once a day; a paid plan on the key raises the limit.' };
+  }
+  const delay = details?.map((d) => d.retryDelay?.match(/^(\d+(?:\.\d+)?)s$/)?.[1]).find(Boolean);
+  return delay ? { retryAfterMs: Math.min(Math.ceil(Number(delay) * 1000), 60_000) } : undefined;
 }
 
 /** Gemini reports an invalid key as HTTP 400 (INVALID_ARGUMENT / API_KEY_INVALID); surface it as auth_failed. */
