@@ -174,6 +174,8 @@ async function landingChecks(browser: Browser) {
   check((await d.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)) === 'auto', 'reduced motion: smooth scrolling disabled');
   const cta = d.locator('.hero .btn--primary');
   check((await cta.getAttribute('href'))?.startsWith('https://docs.google.com/forms/') && (await cta.getAttribute('target')) === '_blank', 'hero primary CTA opens the waitlist in a new tab');
+  await d.locator('.site-footer__ca .copy-btn').click();
+  check((await d.evaluate(() => navigator.clipboard.readText())) === '0x001b8006f91d3345a9a98d426d84488b917139a0', 'footer: copy button copies the exact contract address');
   await d.locator('.site-footer a[href="/console/"]').click();
   await d.waitForURL(`${BASE}/console/`);
   check(true, 'footer link opens the console');
