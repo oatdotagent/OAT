@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OAT post 06 (X) — roadmap</title>
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  * { box-sizing: border-box; }
+  .post { width: 1600px; height: 900px; padding: 76px 96px 60px; display: flex; flex-direction: column; background: #F5F0E6; color: #28251F; font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
+  .eyebrow { font-size: 21px; font-weight: 600; letter-spacing: .32em; color: #2f5d50; }
+  h1 { margin: 18px 0 0; font: 700 74px/1.08 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  h1 em { font-weight: 400; color: #2f5d50; }
+  .cols { margin-top: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .col { min-height: 430px; padding: 34px 34px 30px; border-radius: 22px; background: #FFFCF6; border: 1px solid rgb(40 37 31 / .1); }
+  .col.now { background: #2f5d50; border-color: #2f5d50; color: #FFFCF6; }
+  .label { font-size: 18px; font-weight: 700; letter-spacing: .2em; color: #2f5d50; }
+  .now .label { color: #FFFCF6; }
+  .soon .label { color: #b7791f; }
+  h2 { margin: 14px 0 26px; font: 700 44px/1.1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+  li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; font-size: 25px; line-height: 1.3; }
+  li span { font-weight: 800; color: #2f5d50; }
+  .now li span { color: #FFFCF6; }
+  .soon li span { color: #b7791f; }
+  .footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 40px; height: 40px; }
+  .brand svg * { fill: none; stroke: #28251F; stroke-width: 2; stroke-linecap: round; }
+  .brand b { font: 700 30px/1 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif; letter-spacing: .04em; }
+  .handle { font-size: 17px; font-weight: 600; letter-spacing: .28em; color: rgb(40 37 31 / .7); }
+</style>
+</head>
+<body>
+<div class="post content">
+  <div class="eyebrow">THE ROAD TO LIVE</div>
+  <h1>What we're building <em>next.</em></h1>
+  <div class="cols">
+    <section class="col now">
+      <div class="label">DONE</div>
+      <h2>Built and tested</h2>
+      <ul>
+        <li><span>✓</span>Website online at getoat.sh</li>
+        <li><span>✓</span>Workflow engine</li>
+        <li><span>✓</span>Automatic fallback</li>
+        <li><span>✓</span>Output verification</li>
+      </ul>
+    </section>
+    <section class="col soon">
+      <div class="label">IN PROGRESS</div>
+      <h2>Getting it online</h2>
+      <ul>
+        <li><span>◐</span>Always-on API hosting</li>
+        <li><span>◐</span>Console online</li>
+        <li><span>◐</span>Persistent data and backups</li>
+      </ul>
+    </section>
+    <section class="col">
+      <div class="label">UP NEXT</div>
+      <h2>Open to users</h2>
+      <ul>
+        <li><span>→</span>Self-serve sign-up</li>
+        <li><span>→</span>Usage limits per user</li>
+        <li><span>→</span>Edit and delete workflows</li>
+      </ul>
+    </section>
+  </div>
+  <div class="footer">
+    <div class="brand"><svg viewBox="0 0 32 32"><circle cx="10" cy="10" r="2.6"/><circle cx="22" cy="10" r="2.6"/><circle cx="16" cy="22" r="2.6"/><path d="M12.6 10h6.8M11.3 12.3l3.4 7.2M20.7 12.3l-3.4 7.2"/></svg><b>OAT</b></div>
+    <div class="handle">@GETOATSH</div>
+  </div>
+</div>
+</body>
+</html>
