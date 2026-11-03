@@ -75,7 +75,8 @@ function showComingSoon(): void {
           h(
             'div',
             { class: 'inline-actions' },
-            h('a', { class: 'btn btn--primary', attrs: { href: 'https://x.com/getoatsh', target: '_blank', rel: 'noopener noreferrer' } }, icon('brand-x'), 'Follow @getoatsh'),
+            h('a', { class: 'btn btn--primary', attrs: { href: 'https://docs.google.com/forms/d/e/1FAIpQLSfagIvAOus5Na0lAAoUpNS4wY_9UKLJHr9GFxUX4qsqO2gkIQ/viewform', target: '_blank', rel: 'noopener noreferrer' } }, 'Join the waitlist', icon('arrow-right')),
+            h('a', { class: 'btn btn--secondary', attrs: { href: 'https://x.com/getoatsh', target: '_blank', rel: 'noopener noreferrer' } }, icon('brand-x'), 'Follow @getoatsh'),
             h('a', { class: 'btn btn--secondary', attrs: { href: '/' } }, icon('arrow-left'), 'Back to overview'),
           ),
         ),
