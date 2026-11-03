@@ -91,6 +91,8 @@ Success responses use `{ data, meta: { requestId, page? } }`. Errors use `{ erro
 | `POST /workflows` | user | Create workflow (422 if invalid, 403 if it uses disallowed capabilities) |
 | `GET /workflows` | user | List own workflows (admin: all); `limit`, `offset` |
 | `GET /workflows/:id` | owner/admin | Get workflow |
+| `PUT /workflows/:id` | owner/admin | Replace the definition and bump `version` (422 if invalid, 403 for disallowed capabilities); past executions keep the version they ran |
+| `DELETE /workflows/:id` | owner/admin | Permanently delete the workflow, its executions and verifications (409 while a run is active); provider statistics and audit events are kept |
 | `POST /workflows/:id/validate` | owner/admin | Re-check against current providers; optional `{ input }` validated against `inputSchema` |
 | `POST /workflows/:id/executions` | owner/admin | Start execution `{ input }` → **202** `{ id }`; 422 bad input, 409 provider unavailable |
 | `GET /executions` | user | List own executions; filter `workflowId`, `status` |

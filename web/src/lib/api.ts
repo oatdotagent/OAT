@@ -220,7 +220,7 @@ export function createApi(opts: ApiClientOptions = {}) {
   const doFetch = opts.fetchImpl ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
   const timeoutMs = opts.timeoutMs ?? 20_000;
 
-  async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<Envelope<T>> {
+  async function request<T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<Envelope<T>> {
     const headers: Record<string, string> = { accept: 'application/json' };
     const token = opts.getToken?.();
     if (token) headers.authorization = `Bearer ${token}`;
@@ -275,6 +275,8 @@ export function createApi(opts: ApiClientOptions = {}) {
     createWorkflow: (definition: unknown) => post<Workflow & { stages: string[][] }>('/workflows', definition),
     listWorkflows: (page: { limit?: number; offset?: number } = {}) => get<Workflow[]>(`/workflows${qs(page)}`),
     getWorkflow: (id: string) => get<Workflow>(`/workflows/${encodeURIComponent(id)}`),
+    updateWorkflow: (id: string, definition: unknown) => request<Workflow & { stages: string[][] }>('PUT', `/workflows/${encodeURIComponent(id)}`, definition),
+    deleteWorkflow: (id: string) => request<{ id: string; deleted: boolean; executionsDeleted: number }>('DELETE', `/workflows/${encodeURIComponent(id)}`),
     validateWorkflow: (id: string, input?: unknown) =>
       post<StoredValidation>(`/workflows/${encodeURIComponent(id)}/validate`, input === undefined ? {} : { input }),
     startExecution: (id: string, input: unknown) => post<{ id: string; status: ExecutionStatus }>(`/workflows/${encodeURIComponent(id)}/executions`, { input }),

@@ -81,6 +81,8 @@ async function overflow(page: Page) {
       if (r.width === 0 || r.height === 0) continue;
       // Content inside intentional horizontal scrollers (code blocks) is fine.
       if (el.closest('pre, .tabs__list')) continue;
+      // Stacked tables clip their header row for screen readers; it is never painted.
+      if (el.closest('.table--stack thead') && getComputedStyle(el.closest('thead')!).position === 'absolute') continue;
       if (r.right > vw + 1 || r.left < -1) offenders.push(`${el.tagName.toLowerCase()}.${el.className.toString().split(' ').join('.')} (${Math.round(r.left)}→${Math.round(r.right)})`);
     }
     return { docOverflow, offenders: offenders.slice(0, 5) };
@@ -170,9 +172,11 @@ async function landingChecks(browser: Browser) {
   check(clip.includes('"urls_in_step"') && clip.trim().startsWith('{'), 'copy button copies the code sample');
   check((await d.locator('#panel-json [data-copy-label]').textContent()) === 'Copied', 'copy button confirms');
   check((await d.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)) === 'auto', 'reduced motion: smooth scrolling disabled');
-  await d.locator('.hero .btn--primary').click();
+  const cta = d.locator('.hero .btn--primary');
+  check((await cta.getAttribute('href'))?.startsWith('https://docs.google.com/forms/') && (await cta.getAttribute('target')) === '_blank', 'hero primary CTA opens the waitlist in a new tab');
+  await d.locator('.site-footer a[href="/console/"]').click();
   await d.waitForURL(`${BASE}/console/`);
-  check(true, 'hero primary CTA opens the console');
+  check(true, 'footer link opens the console');
   await dctx.close();
 }
 
@@ -260,6 +264,30 @@ async function consoleChecks(browser: Browser, tokens: { user: string; admin: st
   await page.locator('.step-card').first().waitFor();
   o = await overflow(page);
   check(o.docOverflow <= 0 && o.offenders.length === 0, `execution: no overflow at 320px${o.offenders.length ? ` — ${o.offenders.join(', ')}` : ''}`);
+
+  // Edit bumps the version; delete removes the workflow after confirmation.
+  await page.goto(`${BASE}/console/#/workflows`);
+  await page.locator('.row-link').first().click();
+  await page.getByRole('link', { name: 'Edit', exact: true }).click();
+  const editJson = page.getByLabel('Workflow JSON');
+  await editJson.waitFor();
+  const renamed = JSON.parse(await editJson.inputValue());
+  renamed.name = 'Research brief v2';
+  await editJson.fill(JSON.stringify(renamed, null, 2));
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await page.getByRole('heading', { name: 'Research brief v2' }).waitFor();
+  await page.getByText('as version 2').first().waitFor();
+  check(true, 'edit: saving renames the workflow and bumps its version');
+  o = await overflow(page);
+  check(o.docOverflow <= 0 && o.offenders.length === 0, `workflow detail: no overflow at 320px${o.offenders.length ? ` — ${o.offenders.join(', ')}` : ''}`);
+  await page.screenshot({ path: join(OUT, 'console-320-workflow.png'), fullPage: true });
+  page.once('dialog', (d) => void d.dismiss());
+  await page.getByRole('button', { name: 'Delete' }).click();
+  check(await page.getByRole('heading', { name: 'Research brief v2' }).isVisible(), 'delete: cancelling the confirmation keeps the workflow');
+  page.once('dialog', (d) => void d.accept());
+  await page.getByRole('button', { name: 'Delete' }).click();
+  await page.getByText('No workflows yet').waitFor();
+  check(true, 'delete: confirming removes the workflow');
 
   await page.locator('[data-nav-toggle]').click();
   await page.getByRole('button', { name: 'Sign out' }).last().click();

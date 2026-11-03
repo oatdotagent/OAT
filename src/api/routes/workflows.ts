@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { canAccessOwned, canUseCapability, ownerScope, type AuthContext } from '../../auth/auth.js';
-import { AppError, notFound } from '../../lib/errors.js';
+import { AppError, conflict, notFound } from '../../lib/errors.js';
 import type { WorkflowDefinition } from '../../orchestration/definition.js';
 import { validateWorkflowDefinition, type ReadinessCheck } from '../../orchestration/validate.js';
 import { isCapability } from '../../providers/capabilities.js';
@@ -102,6 +102,34 @@ export const workflowRoutes: FastifyPluginAsync = async (app) => {
     const auth = requirePermission(req, 'workflows:read');
     const { id } = parseWith(wfId, req.params, 'path parameters');
     return sendData(reply, present(loadOwned(id, auth)));
+  });
+
+  app.put('/workflows/:id', async (req, reply) => {
+    const auth = requirePermission(req, 'workflows:write');
+    const { id } = parseWith(wfId, req.params, 'path parameters');
+    const wf = loadOwned(id, auth);
+    const result = validateWorkflowDefinition(req.body);
+    if (!result.valid || !result.definition) {
+      throw new AppError('invalid_workflow', 'Workflow definition is invalid', 422, result.errors);
+    }
+    const denied = readiness(app, result.definition, auth).filter((r) => !r.allowed);
+    if (denied.length > 0) {
+      app.repos.audit({ actorId: auth.userId, action: 'workflow.update', resourceType: 'workflow', resourceId: wf.id, requestId: req.id, outcome: 'denied', details: { denied } });
+      throw new AppError('forbidden', 'Workflow uses capabilities you are not permitted to use', 403, denied);
+    }
+    const updated = app.repos.updateWorkflow(wf.id, result.definition);
+    app.repos.audit({ actorId: auth.userId, action: 'workflow.update', resourceType: 'workflow', resourceId: wf.id, requestId: req.id, outcome: 'success', details: { version: updated.version } });
+    return sendData(reply, { ...present(updated), stages: result.stages });
+  });
+
+  app.delete('/workflows/:id', async (req, reply) => {
+    const auth = requirePermission(req, 'workflows:write');
+    const { id } = parseWith(wfId, req.params, 'path parameters');
+    const wf = loadOwned(id, auth);
+    const deleted = app.repos.deleteWorkflow(wf.id);
+    if (!deleted) throw conflict('Workflow has running executions; cancel them or wait until they finish');
+    app.repos.audit({ actorId: auth.userId, action: 'workflow.delete', resourceType: 'workflow', resourceId: wf.id, requestId: req.id, outcome: 'success', details: { name: wf.name, version: wf.version, ...deleted } });
+    return sendData(reply, { id: wf.id, deleted: true, ...deleted });
   });
 
   // Re-validate a stored workflow against current provider configuration (and optionally a sample input).

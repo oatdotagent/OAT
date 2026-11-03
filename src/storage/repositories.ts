@@ -250,6 +250,30 @@ export class Repositories {
     return { items: rows.map(toWorkflow), total };
   }
 
+  /** Replaces the definition and bumps the version; past executions keep the version they ran. */
+  updateWorkflow(id: string, def: WorkflowDefinition): WorkflowRecord {
+    this.db
+      .prepare('UPDATE workflows SET name = ?, description = ?, version = version + 1, definition_json = ?, updated_at = ? WHERE id = ?')
+      .run(def.name, def.description ?? null, JSON.stringify(def), now(), id);
+    return this.getWorkflow(id)!;
+  }
+
+  /**
+   * Permanently deletes a workflow and its executions (step runs and verifications cascade).
+   * Provider call statistics and audit events are kept. Returns null if a run is still active.
+   */
+  deleteWorkflow(id: string): { executionsDeleted: number } | null {
+    return this.transaction(() => {
+      const active = this.db
+        .prepare(`SELECT COUNT(*) AS n FROM executions WHERE workflow_id = ? AND status IN ('queued','running')`)
+        .get(id) as { n: number };
+      if (active.n > 0) return null;
+      const res = this.db.prepare('DELETE FROM executions WHERE workflow_id = ?').run(id);
+      this.db.prepare('DELETE FROM workflows WHERE id = ?').run(id);
+      return { executionsDeleted: Number(res.changes) };
+    });
+  }
+
   // ----- executions -----
   createExecution(params: {
     workflow: WorkflowRecord;

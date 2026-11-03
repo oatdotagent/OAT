@@ -3,6 +3,7 @@ export type Route =
   | { name: 'workflows' }
   | { name: 'workflow-new' }
   | { name: 'workflow'; id: string }
+  | { name: 'workflow-edit'; id: string }
   | { name: 'executions' }
   | { name: 'execution'; id: string }
   | { name: 'metrics' }
@@ -10,20 +11,21 @@ export type Route =
 
 const ID = /^[a-z]{2}_[a-f0-9]{32}$/;
 
-/** Hash routes: #/overview, #/workflows, #/workflows/new, #/workflows/:id, #/executions[/:id], #/metrics */
+/** Hash routes: #/overview, #/workflows, #/workflows/new, #/workflows/:id[/edit], #/executions[/:id], #/metrics */
 export function parseRoute(hash: string): Route {
   // Ignore any query part (e.g. #/executions?status=failed); views read it themselves.
   const path = hash.replace(/^#/, '').split('?')[0]!.replace(/\/+$/, '') || '/overview';
   const parts = path.split('/').filter(Boolean);
-  const [section, arg] = parts;
-  if (parts.length > 2) return { name: 'not-found', path };
+  const [section, arg, sub] = parts;
+  if (parts.length > 3 || (sub && !(section === 'workflows' && sub === 'edit'))) return { name: 'not-found', path };
   switch (section) {
     case 'overview':
       return arg ? { name: 'not-found', path } : { name: 'overview' };
     case 'workflows':
       if (!arg) return { name: 'workflows' };
-      if (arg === 'new') return { name: 'workflow-new' };
-      return ID.test(arg) && arg.startsWith('wf_') ? { name: 'workflow', id: arg } : { name: 'not-found', path };
+      if (arg === 'new' && !sub) return { name: 'workflow-new' };
+      if (!ID.test(arg) || !arg.startsWith('wf_')) return { name: 'not-found', path };
+      return sub ? { name: 'workflow-edit', id: arg } : { name: 'workflow', id: arg };
     case 'executions':
       if (!arg) return { name: 'executions' };
       return ID.test(arg) && arg.startsWith('ex_') ? { name: 'execution', id: arg } : { name: 'not-found', path };
@@ -40,6 +42,7 @@ export function navSection(route: Route): string {
     case 'workflows':
     case 'workflow-new':
     case 'workflow':
+    case 'workflow-edit':
       return 'workflows';
     case 'executions':
     case 'execution':

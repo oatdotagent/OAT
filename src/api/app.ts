@@ -160,7 +160,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   });
   await app.register(cors, {
     origin: env.CORS_ORIGINS.length > 0 ? env.CORS_ORIGINS : false,
-    methods: ['GET', 'POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['authorization', 'content-type', 'x-request-id'],
     exposedHeaders: ['x-request-id', 'x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'retry-after'],
     credentials: false,

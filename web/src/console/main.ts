@@ -173,6 +173,7 @@ function route(): void {
     workflows: 'Workflows',
     'workflow-new': 'New workflow',
     workflow: 'Workflow',
+    'workflow-edit': 'Edit workflow',
     executions: 'Executions',
     execution: 'Execution',
     metrics: 'Metrics',
@@ -198,6 +199,8 @@ function route(): void {
         return renderWorkflowEditor(ctx);
       case 'workflow':
         return renderWorkflow(ctx, r.id);
+      case 'workflow-edit':
+        return renderWorkflowEditor(ctx, r.id);
       case 'executions':
         return renderExecutions(ctx);
       case 'execution':

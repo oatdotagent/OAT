@@ -90,14 +90,33 @@ function workflowRow(w: Workflow): HTMLElement {
 
 // ---------- Editor ----------
 
-export async function renderWorkflowEditor(ctx: ViewContext): Promise<void> {
+const workflowNotFound = () =>
+  emptyState({ icon: 'alert', title: 'Workflow not found', text: 'It may belong to another user, or the ID is wrong.', action: linkButton('All workflows', '#/workflows', { variant: 'primary' }) });
+
+export async function renderWorkflowEditor(ctx: ViewContext, editId?: string): Promise<void> {
   const { api, root, signal } = ctx;
+  let editing: Workflow | null = null;
+  if (editId) {
+    replace(root, pageHead({ title: 'Edit workflow', back: { href: `#/workflows/${editId}`, label: 'Workflow' } }), loading('Loading workflow…'));
+    try {
+      editing = (await api.getWorkflow(editId)).data;
+    } catch (err) {
+      if (signal.aborted) return;
+      if (err instanceof ApiError && err.status === 404) {
+        replace(root, workflowNotFound());
+        return;
+      }
+      throw err;
+    }
+    if (signal.aborted) return;
+  }
+  const target = editing;
   let selected = TEMPLATES[0]!;
   const textarea = h('textarea', {
     class: 'textarea',
     attrs: { rows: 22, wrap: 'off', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', 'aria-describedby': 'editor-hint' },
   });
-  textarea.value = prettyJson(selected.definition);
+  textarea.value = prettyJson(target ? target.definition : selected.definition);
   const notValidated = () => h('p', { class: 'muted' }, 'Not validated yet. Press Validate to check this definition against the server.');
   const results = h('div', { class: 'stack', attrs: { 'aria-live': 'polite' } }, notValidated());
 
@@ -161,16 +180,16 @@ export async function renderWorkflowEditor(ctx: ViewContext): Promise<void> {
       }),
   });
 
-  const createBtn = button('Create workflow', {
+  const createBtn = button(target ? 'Save changes' : 'Create workflow', {
     variant: 'primary',
-    icon: 'plus',
+    icon: target ? 'check' : 'plus',
     onClick: () =>
-      void withBusy(createBtn, 'Creating…', async () => {
+      void withBusy(createBtn, target ? 'Saving…' : 'Creating…', async () => {
         const def = parse();
         if (def === undefined) return;
         try {
-          const res = await api.createWorkflow(def);
-          toast(`Created “${res.data.name}”`);
+          const res = target ? await api.updateWorkflow(target.id, def) : await api.createWorkflow(def);
+          toast(target ? `Saved “${res.data.name}” as version ${res.data.version}` : `Created “${res.data.name}”`);
           ctx.navigate(`#/workflows/${res.data.id}`);
         } catch (err) {
           if (err instanceof ApiError && err.code === 'invalid_workflow') {
@@ -183,13 +202,15 @@ export async function renderWorkflowEditor(ctx: ViewContext): Promise<void> {
 
   replace(
     root,
-    pageHead({ title: 'New workflow', subtitle: 'Pick a template, edit the JSON, validate, then create.', back: { href: '#/workflows', label: 'Workflows' } }),
+    target
+      ? pageHead({ title: `Edit ${target.name}`, subtitle: `Saving creates version ${target.version + 1}. Past executions keep the version they ran.`, back: { href: `#/workflows/${target.id}`, label: target.name } })
+      : pageHead({ title: 'New workflow', subtitle: 'Pick a template, edit the JSON, validate, then create.', back: { href: '#/workflows', label: 'Workflows' } }),
     h(
       'div',
       { class: 'grid grid--sidebar' },
       card(
         { title: 'Definition', icon: 'layers' },
-        picker,
+        target ? null : picker,
         field('Workflow JSON', textarea),
         h('p', { class: 'field__hint', attrs: { id: 'editor-hint' } }, 'Reference inputs with {{input.name}} and earlier steps with {{steps.<id>.output.<path>}}. Referenced steps must be listed in dependsOn.'),
         h('div', { class: 'editor-actions' }, validateBtn, createBtn),
@@ -254,7 +275,7 @@ export async function renderWorkflow(ctx: ViewContext, id: string): Promise<void
   } catch (err) {
     if (signal.aborted) return;
     if (err instanceof ApiError && err.status === 404) {
-      replace(root, emptyState({ icon: 'alert', title: 'Workflow not found', text: 'It may belong to another user, or the ID is wrong.', action: linkButton('All workflows', '#/workflows', { variant: 'primary' }) }));
+      replace(root, workflowNotFound());
       return;
     }
     throw err;
@@ -310,6 +331,24 @@ export async function renderWorkflow(ctx: ViewContext, id: string): Promise<void
       }),
   });
 
+  const deleteBtn = button('Delete', {
+    variant: 'danger',
+    icon: 'trash',
+    onClick: () => {
+      if (!window.confirm(`Permanently delete “${wf.name}” and all of its executions, verifications and evidence? This cannot be undone.`)) return;
+      void withBusy(deleteBtn, 'Deleting…', async () => {
+        try {
+          const res = await api.deleteWorkflow(wf.id);
+          const n = res.data.executionsDeleted;
+          toast(`Deleted “${wf.name}” and ${n} execution${n === 1 ? '' : 's'}`);
+          ctx.navigate('#/workflows');
+        } catch (err) {
+          replace(runFeedback, errorPanel(err));
+        }
+      });
+    },
+  });
+
   const recent = h('div', {}, loading('Loading recent runs…'));
 
   replace(
@@ -318,6 +357,7 @@ export async function renderWorkflow(ctx: ViewContext, id: string): Promise<void
       title: wf.name,
       subtitle: wf.description ?? undefined,
       back: { href: '#/workflows', label: 'Workflows' },
+      actions: [linkButton('Edit', `#/workflows/${wf.id}/edit`, { icon: 'edit' }), deleteBtn],
     }),
     h(
       'div',

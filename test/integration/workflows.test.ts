@@ -311,4 +311,94 @@ describe('workflows and executions', () => {
     expect(ex.status).toBe('failed');
     expect(ex.error).toMatchObject({ code: 'execution_timeout' });
   }, 15_000);
+
+  describe('editing and deleting', () => {
+    const search = { id: 's', capability: 'web.search', input: { query: 'x' } };
+    const put = (id: string, def: unknown, who: 'alice' | 'bob' | 'admin' = 'alice') =>
+      app.inject({ method: 'PUT', url: `/api/v1/workflows/${id}`, headers: authHeader(who), payload: def as object });
+    const del = (id: string, who: 'alice' | 'bob' | 'admin' = 'alice') =>
+      app.inject({ method: 'DELETE', url: `/api/v1/workflows/${id}`, headers: authHeader(who) });
+    const get = (url: string, who: 'alice' | 'bob' | 'admin' = 'alice') => app.inject({ method: 'GET', url, headers: authHeader(who) });
+
+    it('updates a workflow and bumps its version; past executions keep the version they ran', async () => {
+      app = await testApp();
+      const wf = (await createWorkflow({ name: 'first', steps: [search] })).json().data;
+      const before = await runToCompletion(wf.id, {});
+      expect(before.workflowVersion).toBe(1);
+
+      const res = await put(wf.id, { name: 'second', description: 'renamed', steps: [search] });
+      expect(res.statusCode).toBe(200);
+      expect(res.json().data).toMatchObject({ id: wf.id, name: 'second', description: 'renamed', version: 2, stages: [['s']] });
+
+      const after = await runToCompletion(wf.id, {});
+      expect(after.workflowVersion).toBe(2);
+      expect((await get(`/api/v1/executions/${before.id}`)).json().data.workflowVersion).toBe(1);
+    });
+
+    it('rejects an invalid update and leaves the workflow unchanged', async () => {
+      app = await testApp();
+      const wf = (await createWorkflow({ name: 'keep', steps: [search] })).json().data;
+      const res = await put(wf.id, { name: 'bad', steps: [{ ...search, dependsOn: ['s'] }] });
+      expect(res.statusCode).toBe(422);
+      expect(res.json().error.code).toBe('invalid_workflow');
+      expect((await get(`/api/v1/workflows/${wf.id}`)).json().data).toMatchObject({ name: 'keep', version: 1 });
+    });
+
+    it('refuses an update that adds a capability the caller may not use', async () => {
+      app = await testApp({ env: { USER_ALLOWED_CAPABILITIES: 'web.search' } });
+      const wf = (await createWorkflow({ name: 'limited', steps: [search] })).json().data;
+      const res = await put(wf.id, { name: 'limited', steps: [{ id: 'g', capability: 'llm.generate', input: { prompt: 'hi' } }] });
+      expect(res.statusCode).toBe(403);
+      expect((await get(`/api/v1/workflows/${wf.id}`)).json().data.version).toBe(1);
+    });
+
+    it("hides other users' workflows from update and delete, but allows admins", async () => {
+      app = await testApp();
+      const wf = (await createWorkflow({ name: 'mine', steps: [search] })).json().data;
+      expect((await put(wf.id, { name: 'theirs', steps: [search] }, 'bob')).statusCode).toBe(404);
+      expect((await del(wf.id, 'bob')).statusCode).toBe(404);
+      expect((await get(`/api/v1/workflows/${wf.id}`)).json().data.name).toBe('mine');
+      expect((await put(wf.id, { name: 'by admin', steps: [search] }, 'admin')).json().data.version).toBe(2);
+      expect((await del(wf.id, 'admin')).statusCode).toBe(200);
+    });
+
+    it('deletes a workflow with its executions and verifications, keeping statistics and the audit trail', async () => {
+      app = await testApp({ fetchImpl: mockFetch({}).fetch });
+      const wf = (await createWorkflow(researchWorkflow)).json().data;
+      const ex = await runToCompletion(wf.id, { topic: 'agents' });
+      const verificationId = ex.steps.find((s: { verificationId?: string }) => s.verificationId).verificationId;
+
+      const res = await del(wf.id);
+      expect(res.statusCode).toBe(200);
+      expect(res.json().data).toEqual({ id: wf.id, deleted: true, executionsDeleted: 1 });
+
+      expect((await get(`/api/v1/workflows/${wf.id}`)).statusCode).toBe(404);
+      expect((await get(`/api/v1/executions/${ex.id}`)).statusCode).toBe(404);
+      expect((await get(`/api/v1/verifications/${verificationId}`)).statusCode).toBe(404);
+      expect((await del(wf.id)).statusCode).toBe(404);
+
+      const metrics = (await get('/api/v1/metrics', 'admin')).json().data;
+      expect(metrics.providers.byCapability.length).toBeGreaterThan(0);
+      const audit = (await get('/api/v1/audit-events', 'admin')).json().data;
+      expect(audit).toEqual(expect.arrayContaining([expect.objectContaining({ action: 'workflow.delete', resourceId: wf.id, outcome: 'success' })]));
+    });
+
+    it('refuses to delete a workflow while a run is active', async () => {
+      const f = mockFetch({ 'api.tavily.com': hang });
+      app = await testApp({ env: { TAVILY_API_KEY: 'tvly-test-key-0123', ENABLE_MOCK_PROVIDERS: 'false' }, fetchImpl: f.fetch });
+      const wf = (await createWorkflow({ name: 'slow', steps: [search] })).json().data;
+      const start = await app.inject({ method: 'POST', url: `/api/v1/workflows/${wf.id}/executions`, headers: authHeader('alice'), payload: {} });
+      const id = start.json().data.id;
+      await new Promise((r) => setTimeout(r, 20));
+
+      const refused = await del(wf.id);
+      expect(refused.statusCode).toBe(409);
+      expect(refused.json().error.code).toBe('conflict');
+      expect((await get(`/api/v1/workflows/${wf.id}`)).statusCode).toBe(200);
+
+      await app.inject({ method: 'POST', url: `/api/v1/executions/${id}/cancel`, headers: authHeader('alice') });
+      await app.coordinator.whenSettled(id);
+      expect((await del(wf.id)).statusCode).toBe(200);
+    });
+  });
 });

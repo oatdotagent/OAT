@@ -14,6 +14,7 @@ describe('parseRoute', () => {
     ['#/workflows', { name: 'workflows' }],
     ['#/workflows/new', { name: 'workflow-new' }],
     [`#/workflows/${WF}`, { name: 'workflow', id: WF }],
+    [`#/workflows/${WF}/edit`, { name: 'workflow-edit', id: WF }],
     ['#/executions?status=failed', { name: 'executions' }],
     [`#/executions/${EX}/`, { name: 'execution', id: EX }],
     ['#/metrics', { name: 'metrics' }],
@@ -23,6 +24,9 @@ describe('parseRoute', () => {
     expect(parseRoute('#/workflows/../../etc').name).toBe('not-found');
     expect(parseRoute(`#/workflows/${EX}`).name).toBe('not-found');
     expect(parseRoute('#/admin').name).toBe('not-found');
+    expect(parseRoute('#/workflows/new/edit').name).toBe('not-found');
+    expect(parseRoute(`#/workflows/${WF}/remove`).name).toBe('not-found');
+    expect(parseRoute(`#/executions/${EX}/edit`).name).toBe('not-found');
   });
 
   it('maps detail routes to their nav section', () => {
