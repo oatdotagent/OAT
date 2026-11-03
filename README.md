@@ -4,6 +4,24 @@ A TypeScript/Fastify backend that coordinates calls to external AI and data prov
 
 It is **not** an agent runtime. No model decides control flow. Every step and dependency is fixed in a stored workflow definition, and the actual work is delegated to external providers.
 
+## Run it on your computer
+
+The `getoat` command runs the API and Console together on your own machine, using your own provider keys. It listens on `127.0.0.1` only, and your keys and data stay in `~/.getoat` (or `GETOAT_HOME`).
+
+```bash
+npm install && npm run build
+node dist/cli/index.js          # first run asks for your API keys, then opens the Console
+node dist/cli/index.js --mock   # try it with labelled sample output, no keys needed
+```
+
+The package is not on npm yet. Once it is, the command will be `npx getoat`.
+
+| Command | Purpose |
+|---|---|
+| `getoat` | Start OAT and open the Console (`--port`, `--no-open`, `--mock`) |
+| `getoat setup` | Add or change provider API keys |
+| `getoat token` | Print your local access token |
+
 ## Quick start
 
 ```bash

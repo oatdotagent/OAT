@@ -14,7 +14,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['scripts/**/*.ts', 'e2e/**/*.ts'],
+    files: ['scripts/**/*.ts', 'e2e/**/*.ts', 'src/cli/**/*.ts'],
     rules: { 'no-console': 'off' },
   },
 );
