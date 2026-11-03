@@ -9,12 +9,11 @@ It is **not** an agent runtime. No model decides control flow. Every step and de
 The `getoat` command runs the API and Console together on your own machine, using your own provider keys. It listens on `127.0.0.1` only, and your keys and data stay in `~/.getoat` (or `GETOAT_HOME`).
 
 ```bash
-npm install && npm run build
-node dist/cli/index.js          # first run asks for your API keys, then opens the Console
-node dist/cli/index.js --mock   # try it with labelled sample output, no keys needed
+npx getoat          # first run asks for your API keys, then opens the Console
+npx getoat --mock   # try it with labelled sample output, no keys needed
 ```
 
-The package is not on npm yet. Once it is, the command will be `npx getoat`.
+Requires Node.js 22.13 or newer. Provider usage is billed by each provider to your own keys.
 
 | Command | Purpose |
 |---|---|

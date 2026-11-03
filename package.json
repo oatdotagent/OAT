@@ -1,8 +1,16 @@
 {
   "name": "getoat",
   "version": "0.1.0",
-  "private": true,
-  "description": "AI agent infrastructure backend: API gateway, provider manager, workflow orchestration, verification, observability.",
+  "description": "Run AI workflows across providers on your own computer, with automatic fallback and verified outputs.",
+  "keywords": ["ai", "agents", "workflow", "llm", "verification", "fallback", "cli"],
+  "homepage": "https://getoat.sh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oatdotagent/OAT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oatdotagent/OAT/issues"
+  },
   "license": "MIT",
   "type": "module",
   "engines": {
